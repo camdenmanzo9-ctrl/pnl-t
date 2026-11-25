@@ -531,8 +531,9 @@ extends Screen {
         while (n9 >= 0) {
             n2 = n9;
             n = this.wb(RANGE_LABELS[n9], 0.7f) + 12;
+            final int pick = n9;
             this.rangeButtons.add(0, this.btn(RANGE_LABELS[n9], n8 - n, this.fy + 5, n, () -> {
-                range = n2;
+                range = pick;
             }));
             n8 -= n + 1;
             --n9;
@@ -568,9 +569,10 @@ extends Screen {
             while (n2 < 2) {
                 n = 1 - n2;
                 n13 = this.wb(stringArray[n2], 0.7f) + 16;
+                final int view = n;
                 this.viewButtons.add(0, this.btn(stringArray[n2], n14 - n13, this.contentY() + 6, n13, () -> {
-                    if (playersView != n) {
-                        playersView = n;
+                    if (playersView != view) {
+                        playersView = view;
                         scroll = 0;
                         OverviewScreen.reveal();
                         this.rebuildWidgets();
@@ -2640,9 +2642,8 @@ extends Screen {
                     break;
                 }
                 case 1: {
-                    String string;
                     KeyMapping keyMapping = DashboardClient.streamerKey;
-                    String string2 = this.bindingKey ? "Press a key..." : (string = keyMapping == null ? "-" : keyMapping.getTranslatedKeyMessage().getString());
+                    String string = this.bindingKey ? "Press a key..." : (keyMapping == null ? "-" : keyMapping.getTranslatedKeyMessage().getString());
                     if (!this.bindingKey && keyMapping != null && keyMapping.isUnbound()) {
                         string = "Not set";
                     }
@@ -2997,10 +2998,9 @@ extends Screen {
                 int n13 = 0;
                 float f4 = 0.0f;
                 if (n11 <= n7) {
-                    float f5;
                     float f6 = (float)Math.sqrt(((float)n11 + 0.5f) * ((float)n11 + 0.5f) + ((float)n8 + 0.5f) * ((float)n8 + 0.5f));
                     f4 = Math.max(0.0f, Math.min(1.0f, f2 - f6 + 0.5f)) * Math.max(0.0f, Math.min(1.0f, f6 - f3 + 0.5f));
-                    if (f5 > 0.0f) {
+                    if (f4 > 0.0f) {
                         double d = Math.toDegrees(Math.atan2((double)n11 + 0.5, -((double)n8 + 0.5)));
                         if (d < 0.0) {
                             d += 360.0;

@@ -1,0 +1,16 @@
+plugins {
+    id 'net.fabricmc.fabric-loom'
+}
+version = '1.1.26'
+base { archivesName = 'balancehud' }
+repositories { mavenCentral() }
+dependencies {
+    minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${rootProject.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_version}"
+}
+tasks.withType(JavaCompile).configureEach { options.release = 25 }
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}

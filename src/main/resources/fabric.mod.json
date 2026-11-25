@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "bettors_dashboard",
+  "version": "1.0.4",
+  "name": "DonutGambleTracker",
+  "description": "DonutGambleTracker dashboard with the Balance HUD included.",
+  "authors": [
+    "Snowy"
+  ],
+  "license": "All-Rights-Reserved",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "dev.profit.dashboard.DashboardClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.0",
+    "minecraft": "~26.1",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}

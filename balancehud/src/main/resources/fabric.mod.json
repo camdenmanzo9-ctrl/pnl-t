@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "balancehud",
+  "version": "1.1.26",
+  "name": "Balance HUD",
+  "description": "Montserrat ExtraBold balance, profit chart, and rakeback HUD.",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.snowy.balancehud.BalanceHudClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "~26.1",
+    "java": ">=25",
+    "fabric-api": "*"
+  },
+  "mixins": [
+    "balancehud.mixins.json"
+  ]
+}

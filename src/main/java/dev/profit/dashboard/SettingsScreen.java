@@ -271,6 +271,9 @@ extends Screen {
                 this.toggle("Skin faces", () -> settings.skinFaces, bl -> {
                     settings.skinFaces = bl;
                 });
+                this.toggle("Auction HUD", () -> settings.auctionHud, bl -> {
+                    settings.auctionHud = bl;
+                });
                 this.action("Reset all settings", () -> {
                     Settings.resetAll();
                     this.rebuildWidgets();

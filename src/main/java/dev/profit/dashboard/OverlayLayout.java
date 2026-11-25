@@ -210,7 +210,6 @@ final class OverlayLayout {
 
         @Override
         OverlayGeometry.Box bounds(Minecraft minecraft) {
-            int n;
             if (!this.available()) {
                 return new OverlayGeometry.Box(8, 8 + this.slot * 35, 150, 28);
             }
@@ -221,9 +220,9 @@ final class OverlayLayout {
             if (this.slot == 1 && n2 < 0) {
                 n2 = this.bridge.profitX();
             }
-            int n3 = this.slot == 0 ? this.bridge.balanceWidth(minecraft.font) : (this.slot == 1 ? 220 : (n = this.slot == 2 ? 180 : 190));
+            int n3 = this.slot == 0 ? this.bridge.balanceWidth(minecraft.font) : (this.slot == 1 ? 220 : (this.slot == 2 ? 180 : 190));
             int n4 = this.slot == 0 ? 48 : (this.slot == 1 ? 286 : (this.slot == 2 ? 26 + 17 * Math.max(1, this.bridge.rakeRows()) : this.bridge.auctionHeight()));
-            return new OverlayGeometry.Box(Math.round((float)n2 * f), Math.round((float)nArray[1] * f), Math.max(12, Math.round((float)n * f2)), Math.max(12, Math.round((float)n4 * f2)));
+            return new OverlayGeometry.Box(Math.round((float)n2 * f), Math.round((float)nArray[1] * f), Math.max(12, Math.round((float)n3 * f2)), Math.max(12, Math.round((float)n4 * f2)));
         }
 
         @Override

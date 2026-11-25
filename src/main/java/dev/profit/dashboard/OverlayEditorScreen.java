@@ -59,7 +59,7 @@ extends Screen {
     private Button button(int n, int n2, int n3, String string, Runnable runnable) {
         Button button2 = Button.builder((Component)Component.literal((String)string), button -> runnable.run()).bounds(n, n2, n3, 20).build();
         this.buttons.add(button2);
-        return (Button)this.addWidget((GuiEventListener)button2);
+        return (Button)this.addWidget(button2);
     }
 
     protected void init() {

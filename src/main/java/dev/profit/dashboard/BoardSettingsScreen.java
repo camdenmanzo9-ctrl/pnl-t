@@ -38,7 +38,7 @@ extends Screen {
     }
 
     private void button(int n, int n2, int n3, String string, Runnable runnable) {
-        this.addRenderableWidget((GuiEventListener)Button.builder((Component)Component.literal((String)string), button -> runnable.run()).bounds(n, n2, n3, 20).build());
+        this.addRenderableWidget(Button.builder((Component)Component.literal((String)string), button -> runnable.run()).bounds(n, n2, n3, 20).build());
     }
 
     private void field(int n, String string, String string2, Consumer<String> consumer) {
@@ -46,7 +46,7 @@ extends Screen {
         editBox.setMaxLength(120);
         editBox.setValue(string2 == null ? "" : string2);
         editBox.setResponder(consumer);
-        this.addRenderableWidget((GuiEventListener)editBox);
+        this.addRenderableWidget(editBox);
     }
 
     private Settings.BoardTier tier() {

@@ -620,7 +620,7 @@ extends Screen {
         int n4 = 0;
         while (n4 < n3) {
             Section section = sectionArray[n4];
-            Button button2 = (Button)this.addWidget((GuiEventListener)Button.builder((Component)Component.literal((String)section.label), button -> {
+            Button button2 = (Button)this.addWidget(Button.builder((Component)Component.literal((String)section.label), button -> {
                 SettingsScreen.section = section;
                 this.rebuildWidgets();
             }).bounds(this.wx + 12, n2, 102, 16).build());
@@ -629,7 +629,7 @@ extends Screen {
             n2 += 18;
             ++n4;
         }
-        this.doneButton = (Button)this.addWidget((GuiEventListener)Button.builder((Component)Component.literal((String)"Move HUDs"), button -> {
+        this.doneButton = (Button)this.addWidget(Button.builder((Component)Component.literal((String)"Move HUDs"), button -> {
             if (this.minecraft != null) {
                 this.minecraft.setScreen((Screen)new MoveHudsScreen(this.returnScreen()));
             }
@@ -689,7 +689,7 @@ extends Screen {
                         row.setColor.accept(n);
                         Settings.save();
                     }));
-                    this.addWidget((GuiEventListener)row.box);
+                    this.addWidget(row.box);
                     row.b1 = this.invisible(row.x + row.w - 21, row.y + 3, 16, 14, () -> this.minecraft.setScreen((Screen)new DashboardColorPicker(this.returnScreen(), row.label, row.color.getAsInt(), n -> {
                         row.setColor.accept(n);
                         Settings.save();
@@ -705,13 +705,13 @@ extends Screen {
                         this.minecraft.setScreen((Screen)new ConfirmScreen(bl -> {
                             if (bl) {
                                 if (row.label.equals("Reset all settings")) {
-                                    int n = Settings.S.wins;
-                                    int n2 = Settings.S.losses;
-                                    int n3 = Settings.S.streak;
+                                    int wins = Settings.S.wins;
+                                    int losses = Settings.S.losses;
+                                    int streak = Settings.S.streak;
                                     Settings.S = new Settings();
-                                    Settings.S.wins = n;
-                                    Settings.S.losses = n2;
-                                    Settings.S.streak = n3;
+                                    Settings.S.wins = wins;
+                                    Settings.S.losses = losses;
+                                    Settings.S.streak = streak;
                                     Settings.applyAccent(Settings.S.accent);
                                     Settings.save();
                                 } else {
@@ -736,7 +736,7 @@ extends Screen {
                         row.textSet.accept((String)string);
                         Settings.save();
                     });
-                    this.addWidget((GuiEventListener)row.box);
+                    this.addWidget(row.box);
                 }
             }
             ++n7;
@@ -744,7 +744,7 @@ extends Screen {
     }
 
     private Button invisible(int n, int n2, int n3, int n4, Runnable runnable) {
-        return (Button)this.addWidget((GuiEventListener)Button.builder((Component)Component.literal((String)""), button -> runnable.run()).bounds(n, n2, n3, n4).build());
+        return (Button)this.addWidget(Button.builder((Component)Component.literal((String)""), button -> runnable.run()).bounds(n, n2, n3, n4).build());
     }
 
     private static boolean over(int n, int n2, int n3, int n4, int n5, int n6) {

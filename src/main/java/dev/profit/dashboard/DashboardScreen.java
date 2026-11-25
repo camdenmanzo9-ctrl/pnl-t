@@ -119,23 +119,23 @@ extends Screen {
         this.addTab("Players", Tab.PLAYERS, 2);
         this.addTab("Paid You", Tab.PAID_YOU, 3);
         this.addTab("Sessions", Tab.SESSIONS, 4);
-        this.sessionScope = (Button)this.addRenderableWidget((GuiEventListener)Button.builder((Component)Component.literal((String)"Session"), b -> {
+        this.sessionScope = (Button)this.addRenderableWidget(Button.builder((Component)Component.literal((String)"Session"), b -> {
             sessionView = true;
             this.scroll = 0;
             this.rebuildWidgets();
         }).bounds(this.width - 136, 6, 64, 18).build());
-        this.allScope = (Button)this.addRenderableWidget((GuiEventListener)Button.builder((Component)Component.literal((String)"All Time"), b -> {
+        this.allScope = (Button)this.addRenderableWidget(Button.builder((Component)Component.literal((String)"All Time"), b -> {
             sessionView = false;
             this.scroll = 0;
             this.rebuildWidgets();
         }).bounds(this.width - 72, 6, 64, 18).build());
-        this.themeButton = (Button)this.addRenderableWidget((GuiEventListener)Button.builder((Component)Component.literal((String)"Settings"), b -> {
+        this.themeButton = (Button)this.addRenderableWidget(Button.builder((Component)Component.literal((String)"Settings"), b -> {
             if (this.minecraft != null) {
                 this.minecraft.setScreen((Screen)new SettingsScreen(this));
             }
         }).bounds(6, 170, 106, 20).build());
-        this.endButton = (Button)this.addRenderableWidget((GuiEventListener)Button.builder((Component)Component.literal((String)DashboardScreen.sessionLabel()), b -> this.onEndSession()).bounds(6, this.height - 52, 106, 20).build());
-        this.closeButton = (Button)this.addRenderableWidget((GuiEventListener)Button.builder((Component)Component.literal((String)"Close"), b -> this.closeFully()).bounds(6, this.height - 28, 106, 20).build());
+        this.endButton = (Button)this.addRenderableWidget(Button.builder((Component)Component.literal((String)DashboardScreen.sessionLabel()), b -> this.onEndSession()).bounds(6, this.height - 52, 106, 20).build());
+        this.closeButton = (Button)this.addRenderableWidget(Button.builder((Component)Component.literal((String)"Close"), b -> this.closeFully()).bounds(6, this.height - 28, 106, 20).build());
         this.deleteButtons.clear();
         this.clearAllButton = null;
         this.rowButtons.clear();
@@ -168,7 +168,7 @@ extends Screen {
     }
 
     private void clickArea(String name, int x, int y, int w, int h) {
-        Button b = (Button)this.addRenderableWidget((GuiEventListener)Button.builder((Component)Component.literal((String)name), btn -> this.openPlayer(name)).bounds(x, y, w, h).build());
+        Button b = (Button)this.addRenderableWidget(Button.builder((Component)Component.literal((String)name), btn -> this.openPlayer(name)).bounds(x, y, w, h).build());
         this.rowButtons.put(b, name);
     }
 
@@ -322,7 +322,7 @@ extends Screen {
         this.scroll = Math.max(0, Math.min(this.scroll, Math.max(0, s.size() - visible)));
         for (int i = 0; i < visible && this.scroll + i < s.size(); ++i) {
             String name = s.get((int)(this.scroll + i)).name;
-            Button b = (Button)this.addRenderableWidget((GuiEventListener)Button.builder((Component)Component.literal((String)name), btn -> {
+            Button b = (Button)this.addRenderableWidget(Button.builder((Component)Component.literal((String)name), btn -> {
                 detailPlayer = name;
                 this.scroll = 0;
                 this.rebuildWidgets();
@@ -340,7 +340,7 @@ extends Screen {
         for (int i = 0; i < 4; ++i) {
             long r = ranges[i];
             int w = this.font.width(labels[i]) + 16;
-            Button b = (Button)this.addRenderableWidget((GuiEventListener)Button.builder((Component)Component.literal((String)labels[i]), btn -> {
+            Button b = (Button)this.addRenderableWidget(Button.builder((Component)Component.literal((String)labels[i]), btn -> {
                 graphRange = r;
             }).bounds(bx, 44, w, 16).build());
             this.graphButtons.put(b, r);
@@ -391,7 +391,7 @@ extends Screen {
     private void addDetailButtons() {
         int cx = 134;
         int cw = this.width - cx - 14;
-        this.backButton = (Button)this.addRenderableWidget((GuiEventListener)Button.builder((Component)Component.literal((String)"All players"), b -> this.backToList()).bounds(cx, 44, this.font.width("All players") + 28, 18).build());
+        this.backButton = (Button)this.addRenderableWidget(Button.builder((Component)Component.literal((String)"All players"), b -> this.backToList()).bounds(cx, 44, this.font.width("All players") + 28, 18).build());
         long day = 86400000L;
         String[] labels = new String[]{"24 hours", "7 days", "30 days", "All time"};
         long[] ranges = new long[]{day, 7L * day, 30L * day, 0L};
@@ -399,7 +399,7 @@ extends Screen {
         for (int i = 0; i < 4; ++i) {
             long r = ranges[i];
             int w = this.font.width(labels[i]) + 16;
-            Button b2 = (Button)this.addRenderableWidget((GuiEventListener)Button.builder((Component)Component.literal((String)labels[i]), btn -> {
+            Button b2 = (Button)this.addRenderableWidget(Button.builder((Component)Component.literal((String)labels[i]), btn -> {
                 detailRange = r;
                 this.scroll = 0;
             }).bounds(bx, 92, w, 16).build());
@@ -421,11 +421,11 @@ extends Screen {
         this.scroll = Math.max(0, Math.min(this.scroll, Math.max(0, size - visible)));
         if (size > 0) {
             int bx = cx + 6 + this.font.width("PAST SESSIONS") + 10;
-            this.clearAllButton = (Button)this.addRenderableWidget((GuiEventListener)Button.builder((Component)Component.literal((String)"Clear all"), b -> this.confirmThen(-1, PaymentLedger::clearHistory)).bounds(bx, py + 4, 52, 13).build());
+            this.clearAllButton = (Button)this.addRenderableWidget(Button.builder((Component)Component.literal((String)"Clear all"), b -> this.confirmThen(-1, PaymentLedger::clearHistory)).bounds(bx, py + 4, 52, 13).build());
         }
         for (int i = 0; i < visible && this.scroll + i < size; ++i) {
             int idx = this.scroll + i;
-            Button b2 = (Button)this.addRenderableWidget((GuiEventListener)Button.builder((Component)Component.literal((String)"Del"), btn -> this.confirmThen(idx, () -> PaymentLedger.deleteSession(idx))).bounds(cx + cw - 38, rowsTop + i * rowH - 2, 32, 12).build());
+            Button b2 = (Button)this.addRenderableWidget(Button.builder((Component)Component.literal((String)"Del"), btn -> this.confirmThen(idx, () -> PaymentLedger.deleteSession(idx))).bounds(cx + cw - 38, rowsTop + i * rowH - 2, 32, 12).build());
             this.deleteButtons.put(b2, idx);
         }
     }
@@ -443,7 +443,7 @@ extends Screen {
     }
 
     private void addTab(String label, Tab t, int i) {
-        Button b = (Button)this.addRenderableWidget((GuiEventListener)Button.builder((Component)Component.literal((String)label), btn -> {
+        Button b = (Button)this.addRenderableWidget(Button.builder((Component)Component.literal((String)label), btn -> {
             tab = t;
             this.scroll = 0;
             this.pendingDelete = -2;
@@ -941,7 +941,7 @@ extends Screen {
             total += e2.paidYou;
             top = Math.max(top, e2.paidYou);
         }
-        s.sort(Comparator.comparingLong(e -> e.paidYou).reversed());
+        s.sort(Comparator.comparingLong((PaymentLedger.Entry e) -> e.paidYou).reversed());
         g.text(this.font, "PAID YOU" + (sessionView ? " (SESSION)" : " (ALL TIME)"), cx + 6, py + 7, GOLD, false);
         this.rightText(g, "TOTAL " + Money.format(total), cx + cw - 6, py + 7, GOLD);
         int barX = cx + cw * 38 / 100;

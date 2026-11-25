@@ -50,8 +50,8 @@ extends Screen {
         int h = 124;
         int x = (this.width - w) / 2;
         int y = (this.height - h) / 2;
-        this.confirm = (Button)this.addRenderableWidget((GuiEventListener)Button.builder((Component)Component.literal((String)"Confirm"), b -> this.doConfirm()).bounds(x + 12, y + h - 30, (w - 36) / 2, 20).build());
-        this.cancel = (Button)this.addRenderableWidget((GuiEventListener)Button.builder((Component)Component.literal((String)"Cancel"), b -> this.onClose()).bounds(x + 24 + (w - 36) / 2, y + h - 30, (w - 36) / 2, 20).build());
+        this.confirm = (Button)this.addRenderableWidget(Button.builder((Component)Component.literal((String)"Confirm"), b -> this.doConfirm()).bounds(x + 12, y + h - 30, (w - 36) / 2, 20).build());
+        this.cancel = (Button)this.addRenderableWidget(Button.builder((Component)Component.literal((String)"Cancel"), b -> this.onClose()).bounds(x + 24 + (w - 36) / 2, y + h - 30, (w - 36) / 2, 20).build());
     }
 
     private long waitLeft() {

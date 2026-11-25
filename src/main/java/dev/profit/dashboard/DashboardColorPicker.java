@@ -175,7 +175,7 @@ extends Screen {
                 this.applyColor();
             });
         });
-        this.addWidget((GuiEventListener)this.hex);
+        this.addWidget(this.hex);
         int n2 = Math.max(1, (this.ww - 28) / 20);
         int n3 = Math.max(1, (this.wy + this.wh - 36 - (this.sy + this.sh + 46) - 16) / 20 + 1);
         int n4 = n2 * n3;
@@ -190,18 +190,18 @@ extends Screen {
                 this.setRgb(n6);
                 this.publish();
             }).bounds(n7, n8, 16, 16).build();
-            this.addWidget((GuiEventListener)button2);
+            this.addWidget(button2);
             this.buttons.add(button2);
             this.colors.add(n6);
             ++n5;
         }
-        this.addWidget((GuiEventListener)Button.builder((Component)Component.literal((String)"Done"), button -> this.onClose()).bounds(this.wx + this.ww - 74, this.wy + this.wh - 28, 60, 20).build());
+        this.addWidget(Button.builder((Component)Component.literal((String)"Done"), button -> this.onClose()).bounds(this.wx + this.ww - 74, this.wy + this.wh - 28, 60, 20).build());
         if (this.pages > 1) {
-            this.addWidget((GuiEventListener)Button.builder((Component)Component.literal((String)"Previous presets"), button -> {
+            this.addWidget(Button.builder((Component)Component.literal((String)"Previous presets"), button -> {
                 this.page = Math.floorMod(this.page - 1, this.pages);
                 this.rebuildWidgets();
             }).bounds(this.wx + 14, this.wy + this.wh - 28, 22, 20).build());
-            this.addWidget((GuiEventListener)Button.builder((Component)Component.literal((String)"Next presets"), button -> {
+            this.addWidget(Button.builder((Component)Component.literal((String)"Next presets"), button -> {
                 this.page = (this.page + 1) % this.pages;
                 this.rebuildWidgets();
             }).bounds(this.wx + 40, this.wy + this.wh - 28, 22, 20).build());

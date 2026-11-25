@@ -457,7 +457,7 @@ extends Screen {
     }
 
     private Button btn(String string, int n, int n2, int n3, Runnable runnable) {
-        return (Button)this.addWidget((GuiEventListener)Button.builder((Component)Component.literal((String)string), button -> runnable.run()).bounds(n, n2, n3, 16).build());
+        return (Button)this.addWidget(Button.builder((Component)Component.literal((String)string), button -> runnable.run()).bounds(n, n2, n3, 16).build());
     }
 
     private int contentY() {
@@ -589,7 +589,7 @@ extends Screen {
                 search = string;
                 scroll = 0;
             });
-            this.addWidget((GuiEventListener)this.searchBox);
+            this.addWidget(this.searchBox);
             Button button = this.btn("", n, n13, n2, () -> {
                 this.pendingFocus = this.searchBox;
             });
@@ -2345,13 +2345,13 @@ extends Screen {
             paySearch = string;
             scroll = 0;
         });
-        this.addWidget((GuiEventListener)this.searchBox);
+        this.addWidget(this.searchBox);
         this.btn("", this.paySearchX(), nArray[1] + 6, this.paySearchW(), () -> {
             this.pendingFocus = this.searchBox;
         });
         n2 = this.wb("LOAD MORE", 0.7f) + 20;
         this.loadMoreBtn = this.btn("", nArray[0] + nArray[2] - 10 - n2, nArray[1] + nArray[3] - 21, n2, () -> {
-            int n = payShown = payShown + 12;
+            payShown = payShown + 12;
         });
     }
 
@@ -2573,7 +2573,7 @@ extends Screen {
                             Settings.save();
                         }
                     });
-                    this.addWidget((GuiEventListener)this.hexBox);
+                    this.addWidget(this.hexBox);
                     EditBox editBox = this.hexBox;
                     Button[] buttonArray4 = new Button[1];
                     buttonArray = buttonArray4;
@@ -2843,7 +2843,7 @@ extends Screen {
             }
             consumer.accept((String)string);
         });
-        this.addWidget((GuiEventListener)editBox);
+        this.addWidget(editBox);
         return editBox;
     }
 
@@ -2925,7 +2925,7 @@ extends Screen {
             this.pendingFocus = this.itemSearch;
         });
         button3.setHeight(18);
-        this.gridBtn = (Button)this.addWidget((GuiEventListener)Button.builder((Component)Component.literal((String)""), button -> this.pickItemAtMouse()).bounds(nArray3[0], nArray3[1], nArray3[2], nArray3[3]).build());
+        this.gridBtn = (Button)this.addWidget(Button.builder((Component)Component.literal((String)""), button -> this.pickItemAtMouse()).bounds(nArray3[0], nArray3[1], nArray3[2], nArray3[3]).build());
     }
 
     private void pickSV() {
@@ -3257,7 +3257,7 @@ extends Screen {
                 int n54 = nArray3[1] + n5 * 26;
                 object = allItems.get(list.get(n51));
                 n3 = n >= n53 && n < n53 + 26 && n2 >= n54 && n2 < n54 + 26 ? 1 : 0;
-                boolean bl5 = bl4 = !Auction.item.isEmpty() && Auction.item.getItem() == object.getItem();
+                boolean bl5 = bl4 = !Auction.item.isEmpty() && Auction.item.getItem() == ((ItemStack)object).getItem();
                 if (bl4) {
                     this.box(guiGraphicsExtractor, n53, n54, 24, 24, OverviewScreen.alpha(n16, 60), n16);
                 } else if (n3 != 0) {
@@ -3284,9 +3284,10 @@ extends Screen {
             if (n58 == 0) {
                 OverviewScreen.round(guiGraphicsExtractor, n9 + 4, n3 - 2, n8 - 8, n55 - 1, 3, OverviewScreen.alpha(n16, 40));
             }
-            this.face(guiGraphicsExtractor, (String)object.getKey(), n9 + 8, n3, 10);
-            this.text(guiGraphicsExtractor, (String)object.getKey(), n9 + 22, n3 + 1, -1, 0.64f, true);
-            String string9 = Money.format((Long)object.getValue());
+            @SuppressWarnings("unchecked") Map.Entry<String, Long> bid = (Map.Entry<String, Long>)object;
+            this.face(guiGraphicsExtractor, bid.getKey(), n9 + 8, n3, 10);
+            this.text(guiGraphicsExtractor, bid.getKey(), n9 + 22, n3 + 1, -1, 0.64f, true);
+            String string9 = Money.format(bid.getValue());
             this.text(guiGraphicsExtractor, string9, n9 + n8 - 10 - this.wb(string9, 0.64f), n3 + 1, -13710223, 0.64f, true);
             ++n58;
         }

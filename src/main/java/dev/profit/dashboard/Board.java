@@ -51,12 +51,12 @@ public final class Board {
         String string2;
         if (string != null && string.contains(":")) {
             try {
-                string2 = (Item)BuiltInRegistries.ITEM.getValue(Identifier.parse((String)string));
-                if (string2 != null) {
+                Item item = BuiltInRegistries.ITEM.getValue(Identifier.parse((String)string));
+                if (item != null) {
                     guiGraphicsExtractor.pose().pushMatrix();
                     guiGraphicsExtractor.pose().translate((float)n, (float)n2);
                     guiGraphicsExtractor.pose().scale(0.65f, 0.65f);
-                    guiGraphicsExtractor.item(new ItemStack((ItemLike)string2), 0, 0);
+                    guiGraphicsExtractor.item(new ItemStack((ItemLike)item), 0, 0);
                     guiGraphicsExtractor.pose().popMatrix();
                     return;
                 }

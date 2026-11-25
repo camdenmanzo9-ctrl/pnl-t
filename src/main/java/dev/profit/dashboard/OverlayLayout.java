@@ -134,10 +134,10 @@ final class OverlayLayout {
         }
 
         int rakeRows() {
-            Map map = (Map)this.value("NETS");
-            Map map2 = (Map)this.value("RAKE_BASE");
+            @SuppressWarnings("unchecked") Map<String, Double> map = (Map<String, Double>)this.value("NETS");
+            @SuppressWarnings("unchecked") Map<String, Double> map2 = (Map<String, Double>)this.value("RAKE_BASE");
             int n = 0;
-            for (Map.Entry entry : map.entrySet()) {
+            for (Map.Entry<String, Double> entry : map.entrySet()) {
                 if (!((Double)entry.getValue() < 0.0) || !(-((Double)entry.getValue()).doubleValue() - map2.getOrDefault(entry.getKey(), 0.0) > 0.0)) continue;
                 ++n;
             }

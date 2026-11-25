@@ -76,45 +76,21 @@ extends Screen {
     }
 
     private static int rainbow(double t) {
-        int g;
-        int r;
         double h = (t % 1.0 + 1.0) % 1.0 * 6.0;
         int i = (int)h;
         double fr = h - (double)i;
         int q = (int)(255.0 * (1.0 - fr));
         int tt = (int)(255.0 * fr);
-        return 0xFF000000 | r << 16 | g << 8 | (switch (i) {
-            case 0 -> {
-                r = 255;
-                g = tt;
-                yield 0;
-            }
-            case 1 -> {
-                r = q;
-                g = 255;
-                yield 0;
-            }
-            case 2 -> {
-                r = 0;
-                g = 255;
-                yield tt;
-            }
-            case 3 -> {
-                r = 0;
-                g = q;
-                yield 255;
-            }
-            case 4 -> {
-                r = tt;
-                g = 0;
-                yield 255;
-            }
-            default -> {
-                r = 255;
-                g = 0;
-                yield q;
-            }
-        });
+        int r, g, b;
+        switch (i) {
+            case 0 -> { r = 255; g = tt; b = 0; }
+            case 1 -> { r = q; g = 255; b = 0; }
+            case 2 -> { r = 0; g = 255; b = tt; }
+            case 3 -> { r = 0; g = q; b = 255; }
+            case 4 -> { r = tt; g = 0; b = 255; }
+            default -> { r = 255; g = 0; b = q; }
+        }
+        return 0xFF000000 | r << 16 | g << 8 | b;
     }
 
     public void extractBackground(GuiGraphicsExtractor g, int mouseX, int mouseY, float delta) {

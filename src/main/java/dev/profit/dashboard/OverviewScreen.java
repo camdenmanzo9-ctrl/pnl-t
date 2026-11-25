@@ -2493,9 +2493,6 @@ extends Screen {
         arrayList.add(new SRow("RAKEBACK", settings.rakePct + "% back once a player has lost " + Money.format(settings.rakeMin) + ". Who is close and what you owe (Balance HUD mod)", 0, () -> Panels.rakeback, bl -> {
             Panels.rakeback = bl;
         }));
-        arrayList.add(new SRow("OLD SCOREBOARD", "Old DonutSMP scoreboard: just Money, Shards, Deaths and Playtime", 0, () -> settings.oldScoreboard, bl -> {
-            settings.oldScoreboard = bl;
-        }));
         arrayList.add(new SRow("BACKGROUND", "All backgrounds in one list. Only Sakura moves.", 3, null, null));
         return arrayList;
     }

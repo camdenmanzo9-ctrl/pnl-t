@@ -111,10 +111,6 @@ implements ClientModInitializer {
             return false;
         });
         HudElementRegistry.addLast((Identifier)Identifier.fromNamespaceAndPath((String)"bettors_dashboard", (String)"alerts"), (guiGraphicsExtractor, deltaTracker) -> Alerts.render(guiGraphicsExtractor));
-        // Old DonutSMP scoreboard (Streamer tab): only Money, Shards, Deaths, Playtime
-        HudElementRegistry.replaceElement(net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements.SCOREBOARD, vanilla -> (g, dt) -> {
-            if (!Settings.S.oldScoreboard || !OldScoreboard.draw(g, net.minecraft.client.Minecraft.getInstance())) vanilla.extractRenderState(g, dt);
-        });
         ClientReceiveMessageEvents.MODIFY_GAME.register((component, bl) -> bl ? component : Alerts.recolor(component));
         ClientSendMessageEvents.COMMAND.register(string -> {
             String string2 = string.trim().toLowerCase();

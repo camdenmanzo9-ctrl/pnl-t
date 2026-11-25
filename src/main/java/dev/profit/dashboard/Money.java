@@ -16,27 +16,13 @@ public final class Money {
         if (s.isEmpty()) {
             throw new NumberFormatException("empty amount");
         }
-        switch (Character.toUpperCase(s.charAt(s.length() - 1))) {
-            case 'K': {
-                long l = 1000L;
-                break;
-            }
-            case 'M': {
-                long l = 1000000L;
-                break;
-            }
-            case 'B': {
-                long l = 1000000000L;
-                break;
-            }
-            case 'T': {
-                long l = 1000000000000L;
-                break;
-            }
-            default: {
-                long l = mult = 1L;
-            }
-        }
+        mult = switch (Character.toUpperCase(s.charAt(s.length() - 1))) {
+            case 'K' -> 1000L;
+            case 'M' -> 1000000L;
+            case 'B' -> 1000000000L;
+            case 'T' -> 1000000000000L;
+            default -> 1L;
+        };
         if (mult != 1L) {
             s = s.substring(0, s.length() - 1);
         }

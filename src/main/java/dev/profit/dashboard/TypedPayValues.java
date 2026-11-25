@@ -22,7 +22,7 @@ final class TypedPayValues {
         if (!string2.matches("(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)[KMBT]?")) {
             return OptionalLong.empty();
         }
-        long l2 = string2.endsWith("K") ? 1000L : (string2.endsWith("M") ? 1000000L : (string2.endsWith("B") ? 1000000000L : (l = string2.endsWith("T") ? 1000000000000L : 1L)));
+        l = string2.endsWith("K") ? 1000L : (string2.endsWith("M") ? 1000000L : (string2.endsWith("B") ? 1000000000L : (string2.endsWith("T") ? 1000000000000L : 1L)));
         if (l != 1L) {
             string2 = string2.substring(0, string2.length() - 1);
         }

@@ -78,7 +78,8 @@ final class AuctionHudPanel {
         int n4;
         int n5 = 58;
         int n6 = n3 + (n == 0 ? 110 : (n == 1 ? 117 : 120));
-        int n7 = n == 0 ? 17 : (n4 = n == 1 ? 10 : 7);
+        n4 = n == 0 ? 17 : (n == 1 ? 10 : 7);
+        int n7 = n4;
         int n8 = n == 0 ? -13755 : (n == 1 ? -4207663 : -1598641);
         boolean bl = n < list.size();
         int n9 = bl ? n8 : 0x50000000 | n8 & 0xFFFFFF;

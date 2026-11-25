@@ -90,8 +90,7 @@ public final class Board {
                         double d2 = n6 - 5;
                         double d3 = d * d + d2 * d2;
                         if (!(d3 > 29.0)) {
-                            int n8;
-                            int n9 = d3 > 19.0 ? -2773415 : (d3 < 4.0 ? -2112134 : (n8 = ((int)Math.floor((Math.atan2(d2, d) + Math.PI) * 8.0 / Math.PI) & 1) == 0 ? n5 : n4));
+                            int n8 = d3 > 19.0 ? -2773415 : (d3 < 4.0 ? -2112134 : (((int)Math.floor((Math.atan2(d2, d) + Math.PI) * 8.0 / Math.PI) & 1) == 0 ? n5 : n4));
                             if (string2.equals("wheel") && d3 <= 19.0 && d3 >= 4.0) {
                                 n8 = ((int)Math.floor((Math.atan2(d2, d) + Math.PI) * 4.0 / Math.PI) & 1) == 0 ? -5147676 : -11502635;
                             }

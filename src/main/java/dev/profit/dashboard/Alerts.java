@@ -364,7 +364,8 @@ public final class Alerts {
         if (settings.streakBorder) {
             Alerts.outline(guiGraphicsExtractor, 0, 0, n4, n5, 0x40FFFFFF);
         }
-        int n7 = settings.streak > 0 ? -11870592 : (n = settings.streak < 0 ? -42386 : -1);
+        n = settings.streak > 0 ? -11870592 : (settings.streak < 0 ? -42386 : -1);
+        int n7 = n;
         if (settings.streakAccent) {
             guiGraphicsExtractor.fill(0, 0, 2, n5, n);
         }

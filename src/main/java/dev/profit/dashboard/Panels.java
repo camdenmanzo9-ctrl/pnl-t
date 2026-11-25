@@ -34,7 +34,7 @@ public final class Panels {
                 boolean bl = stringArray[1].trim().equalsIgnoreCase("on");
                 switch (stringArray[0].trim().toLowerCase()) {
                     case "hide_all": {
-                        allHidden = bl;
+                        allHidden = false;   // "Hide all overlays" button was removed
                         break;
                     }
                     case "balance": {

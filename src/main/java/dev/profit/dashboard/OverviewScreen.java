@@ -641,6 +641,31 @@ extends Screen {
         }
     }
 
+    // One background list: 0-8 = original scenes, 9-17 = picture artwork.
+    private static int backgroundIndex() {
+        int n = Scenes.NAMES.length;
+        return Settings.S.useScenicBackgrounds ? n + Math.floorMod(Settings.S.scenicScene, n) : Math.floorMod(Settings.S.scene, n);
+    }
+
+    private static void setBackground(int i) {
+        int n = Scenes.NAMES.length;
+        i = Math.floorMod(i, n * 2);
+        if (i < n) {
+            Settings.S.useScenicBackgrounds = false;
+            Settings.S.scene = i;
+        } else {
+            Settings.S.useScenicBackgrounds = true;
+            Settings.S.scenicScene = i - n;
+        }
+        Settings.save();
+    }
+
+    private static String backgroundName(int i) {
+        int n = Scenes.NAMES.length;
+        if (i < n) return Scenes.NAMES[i];
+        return (i - n == 4 ? "Cherry Blossom" : Scenes.NAMES[i - n]) + " (Art)";
+    }
+
     private void selectBackground(int n) {
         Settings.S.scenicScene = Math.floorMod(Settings.S.scenicScene + n, Scenes.NAMES.length);
         Settings.S.useScenicBackgrounds = true;
@@ -660,20 +685,12 @@ extends Screen {
         });
         this.smoothHigh.setHeight(20);
         this.smoothLight.setHeight(20);
-        this.backgroundPrev = this.btn("", this.fx + this.fw - 196, n + 57, 22, () -> this.selectBackground(-1));
-        this.backgroundNext = this.btn("", this.fx + this.fw - 42, n + 57, 22, () -> this.selectBackground(1));
-        this.backgroundPrev.setHeight(20);
-        this.backgroundNext.setHeight(20);
-        this.btn("", this.backgroundPrev.getX() + 24, n + 57, 126, () -> {
-            Settings.S.useScenicBackgrounds = true;
-            Settings.save();
-        }).setHeight(20);
-        this.slowSlideOn = this.btn("", this.fx + this.fw - 124, n + 105, 50, () -> {
+        this.slowSlideOn = this.btn("", this.fx + this.fw - 124, n + 57, 50, () -> {
             Settings.S.slowSlideDown = true;
             Settings.save();
             OverviewScreen.reveal();
         });
-        this.slowSlideOff = this.btn("", this.fx + this.fw - 70, n + 105, 50, () -> {
+        this.slowSlideOff = this.btn("", this.fx + this.fw - 70, n + 57, 50, () -> {
             Settings.S.slowSlideDown = false;
             Settings.save();
         });
@@ -690,16 +707,7 @@ extends Screen {
         this.text(guiGraphicsExtractor, this.fitText(string, Math.max(40, this.fw - 180), 0.65f, false), this.fx + 22, n3 + 25, -7696482, 0.65f, false);
         this.segment(guiGraphicsExtractor, this.smoothHigh, "HIGH", Settings.S.highSmoothness, n, n2);
         this.segment(guiGraphicsExtractor, this.smoothLight, "LIGHT", !Settings.S.highSmoothness, n, n2);
-        int n4 = n3 + 48;
-        this.box(guiGraphicsExtractor, this.fx + 10, n4, this.fw - 20, 40, -15526625, -14934485);
-        this.caps(guiGraphicsExtractor, "BACKGROUND", this.fx + 22, n4 + 8, -1);
-        this.text(guiGraphicsExtractor, Settings.S.useScenicBackgrounds ? "New scenic backgrounds \u00b7 active" : "New scenic backgrounds \u00b7 click name to use", this.fx + 22, n4 + 25, -7696482, 0.65f, false);
-        this.segment(guiGraphicsExtractor, this.backgroundPrev, "<", false, n, n2);
-        this.segment(guiGraphicsExtractor, this.backgroundNext, ">", false, n, n2);
-        int n5 = Math.floorMod(Settings.S.scenicScene, Scenes.NAMES.length);
-        String string2 = n5 == 4 ? "Cherry Blossom" : Scenes.NAMES[n5];
-        this.text(guiGraphicsExtractor, this.fitText(string2, 124, 0.75f, true), this.backgroundPrev.getX() + 28, n4 + 15, -1, 0.75f, true);
-        int n6 = n3 + 96;
+        int n6 = n3 + 48;   // background picker moved to the Streamer tab
         this.box(guiGraphicsExtractor, this.fx + 10, n6, this.fw - 20, 40, -15526625, -14934485);
         this.caps(guiGraphicsExtractor, "SLOW SLIDE-DOWN", this.fx + 22, n6 + 8, -1);
         this.text(guiGraphicsExtractor, this.fitText("Gently lower content when opening or switching tabs.", Math.max(40, this.fw - 180), 0.65f, false), this.fx + 22, n6 + 25, -7696482, 0.65f, false);
@@ -827,7 +835,7 @@ extends Screen {
         guiGraphicsExtractor.fill(0, 0, this.width, this.height, -15921644);
         OverviewScreen.round(guiGraphicsExtractor, this.ox, this.fy, this.ow, this.fh, 6, OverviewScreen.alpha(-14934485, 192));
         if (Settings.S.useScenicBackgrounds) {
-            ScenicBackgrounds.draw(guiGraphicsExtractor, this.fx, this.fy + 27, this.fw - 1, this.fh - 28, Settings.S.scenicScene, Settings.S.highSmoothness);
+            ScenicBackgrounds.draw(guiGraphicsExtractor, this.fx, this.fy + 27, this.fw - 1, this.fh - 28, Settings.S.scenicScene, false);   // pictures stay still
         } else {
             Scenes.draw(guiGraphicsExtractor, this.fx, this.fy + 27, this.fw - 1, this.fh - 28, Settings.S.scene, Settings.S.highSmoothness ? System.currentTimeMillis() : 0L);
         }
@@ -2485,29 +2493,10 @@ extends Screen {
         arrayList.add(new SRow("RAKEBACK", settings.rakePct + "% back once a player has lost " + Money.format(settings.rakeMin) + ". Who is close and what you owe (Balance HUD mod)", 0, () -> Panels.rakeback, bl -> {
             Panels.rakeback = bl;
         }));
-        arrayList.add(new SRow("PROFIT OF THE DAY", "The small profit box on your screen", 0, () -> settings.hudShow, bl -> {
-            settings.hudShow = bl;
-        }));
-        arrayList.add(new SRow("WIN STREAK", "Win streak counter (/win, /lose or keybinds)", 0, () -> settings.streakShow, bl -> {
-            settings.streakShow = bl;
-        }));
         arrayList.add(new SRow("AUCTION HUD", "The auction in the middle of your screen while it runs", 0, () -> settings.auctionHud, bl -> {
             settings.auctionHud = bl;
         }));
-        arrayList.add(new SRow("PAYMENT POPUP", "The alert for big payments you receive", 0, () -> settings.popupShow, bl -> {
-            settings.popupShow = bl;
-        }));
-        arrayList.add(new SRow("CHAT COLORS", "Recolor payment messages in chat (only on your screen)", 0, () -> settings.chatColors, bl -> {
-            settings.chatColors = bl;
-        }));
-        arrayList.add(new SRow("CHAT FILTER", "Hide small payments from chat. They still count.", 0, () -> settings.filterOn, bl -> {
-            settings.filterOn = bl;
-        }));
-        arrayList.add(new SRow("PAY CONFIRMATION", "Asks before a big /pay. You still press Enter yourself.", 0, () -> settings.payAsk, bl -> {
-            settings.payAsk = bl;
-        }));
-        arrayList.add(new SRow("STREAMER KEYBIND", "Opens the dashboard straight on this tab. Click, then press a key (Backspace clears).", 1, null, null));
-        arrayList.add(new SRow("ORIGINAL BACKGROUND", "Original animated scenes. New scenic artwork is in General. Click a name or arrow to use.", 3, null, null));
+        arrayList.add(new SRow("BACKGROUND", "All backgrounds in one list. Only Sakura moves.", 3, null, null));
         return arrayList;
     }
 
@@ -2526,11 +2515,6 @@ extends Screen {
 
     private void initStreamer() {
         Panels.load();
-        this.hideAllOverlays = this.btn("", this.fx + this.fw - 164, this.contentBottom() - 28, 150, () -> {
-            Panels.allHidden = !Panels.allHidden;
-            Panels.save();
-        });
-        this.hideAllOverlays.setHeight(22);
         List<SRow> list = this.streamerRows();
         scroll = Math.max(0, Math.min(scroll, Math.max(0, list.size() - this.stVisible())));
         int n = this.fx + 10;
@@ -2588,19 +2572,14 @@ extends Screen {
                 default: {
                     Button[] buttonArray5 = new Button[3];
                     buttonArray5[0] = this.btn("", n6 - 160, n5, 16, () -> {
-                        Settings.S.scene = Math.floorMod(Settings.S.scene - 1, Scenes.NAMES.length);
-                        Settings.S.useScenicBackgrounds = false;
-                        Settings.save();
+                        OverviewScreen.setBackground(OverviewScreen.backgroundIndex() - 1);
                     });
                     buttonArray5[1] = this.btn("", n6 - 16, n5, 16, () -> {
-                        Settings.S.scene = Math.floorMod(Settings.S.scene + 1, Scenes.NAMES.length);
-                        Settings.S.useScenicBackgrounds = false;
-                        Settings.save();
+                        OverviewScreen.setBackground(OverviewScreen.backgroundIndex() + 1);
                     });
                     buttonArray = buttonArray5;
                     buttonArray5[2] = this.btn("", n6 - 138, n5, 120, () -> {
-                        Settings.S.useScenicBackgrounds = false;
-                        Settings.save();
+                        OverviewScreen.setBackground(OverviewScreen.backgroundIndex());
                     });
                 }
             }
@@ -2610,7 +2589,7 @@ extends Screen {
     }
 
     private void drawStreamer(GuiGraphicsExtractor guiGraphicsExtractor, int n, int n2) {
-        this.pageTitle(guiGraphicsExtractor, "Streamer", "Turn every HUD and module on or off, and set your keybind, accent color and background.");
+        this.pageTitle(guiGraphicsExtractor, "Streamer", "Turn your Balance HUD panels on or off and pick a background. Everything else is in Settings.");
         List<SRow> list = this.streamerRows();
         int n3 = this.fx + 10;
         int n4 = this.fw - 20;
@@ -2670,7 +2649,7 @@ extends Screen {
                 default: {
                     this.arrowBox(guiGraphicsExtractor, buttonArray[0], true, n, n2);
                     this.arrowBox(guiGraphicsExtractor, buttonArray[1], false, n, n2);
-                    String string = Scenes.NAMES[Math.floorMod(Settings.S.scene, Scenes.NAMES.length)];
+                    String string = OverviewScreen.backgroundName(OverviewScreen.backgroundIndex());
                     int n12 = (buttonArray[0].getX() + 16 + buttonArray[1].getX()) / 2;
                     this.text(guiGraphicsExtractor, string, n12 - this.wb(string, 0.74f) / 2, n7 + 4, -1, 0.74f, true);
                 }
@@ -2679,8 +2658,6 @@ extends Screen {
         }
         this.scrollbar(guiGraphicsExtractor, n3 + n4 + 3, this.stTop(), this.contentBottom() - 38 - this.stTop(), this.stVisible(), list.size());
         guiGraphicsExtractor.fill(n3, this.contentBottom() - 35, n3 + n4, this.contentBottom() - 34, -1723643301);
-        this.segment(guiGraphicsExtractor, this.hideAllOverlays, Panels.allHidden ? "RESTORE OVERLAYS" : "HIDE ALL OVERLAYS", Panels.allHidden, n, n2);
-        this.text(guiGraphicsExtractor, this.fitText(Panels.allHidden ? "All mod overlays hidden" : "Keeps your individual switches", Math.max(20, n4 - 172), 0.7f, false), n3 + 4, this.contentBottom() - 20, -9538685, 0.7f, false);
     }
 
     private void segment(GuiGraphicsExtractor guiGraphicsExtractor, Button button, String string, boolean bl, int n, int n2) {

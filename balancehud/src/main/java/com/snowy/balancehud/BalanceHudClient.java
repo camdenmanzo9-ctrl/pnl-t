@@ -767,6 +767,9 @@ public class BalanceHudClient implements ClientModInitializer {
         // One continuous mint/pink trace, with straight segments like the reference.
         boolean up = HISTORY.get(n - 1) >= 0;
         int lineColor = up ? GREEN : RED;
+        int rgb = lineColor & 0xFFFFFF;
+        // Thin, smooth (anti-aliased) 1px line with a faint fill underneath.
+        double prev = -1;
         int last = yz;
         for (int i = 0; i < w; i++) {
             double t = (double) i * (n - 1) / Math.max(1, w - 1);
@@ -774,14 +777,26 @@ public class BalanceHudClient implements ClientModInitializer {
             int i1 = Math.min(n - 1, i0 + 1);
             double fraction = t - i0;
             double v = HISTORY.get(i0) + (HISTORY.get(i1) - HISTORY.get(i0)) * fraction;
-            int yy = y + (int) ((max - v) / (max - min) * (h - 1));
-            int top = Math.min(yy, yz), bot = Math.max(yy, yz) + 1;
-            g.fill(x + i, top, x + i + 1, bot, 0x08000000 | (lineColor & 0xFFFFFF));
-            int lineTop = i == 0 ? yy : Math.min(last, yy);
-            int lineBottom = i == 0 ? yy + 1 : Math.max(last, yy) + 1;
-            g.fill(x + i, Math.max(y, lineTop - 1), x + i + 1, Math.min(y + h, lineBottom + 1),
-                    up ? 0x1077F5A2 : 0x10EE739E);
-            g.fill(x + i, lineTop, x + i + 1, lineBottom, lineColor);
+            double fy = y + (max - v) / (max - min) * (h - 1);
+            int yy = (int) Math.round(fy);
+            g.fill(x + i, Math.min(yy, yz), x + i + 1, Math.max(yy, yz) + 1, 0x08000000 | rgb);
+            double a = i == 0 ? fy : prev, b = fy;
+            double lo = Math.min(a, b), hi = Math.max(a, b);
+            if (hi - lo < 1.0) {
+                // flat part: split the pixel between the two rows it falls on
+                double mid = (lo + hi) / 2;
+                int row = (int) Math.floor(mid);
+                double frac = mid - row;
+                g.fill(x + i, row, x + i + 1, row + 1, ((int) (255 * (1 - frac)) << 24) | rgb);
+                if (frac > 0.02) g.fill(x + i, row + 1, x + i + 1, row + 2, ((int) (255 * frac) << 24) | rgb);
+            } else {
+                // steep part: solid middle, soft ends
+                int top = (int) Math.floor(lo), bot = (int) Math.ceil(hi);
+                g.fill(x + i, top + 1, x + i + 1, bot, lineColor);
+                g.fill(x + i, top, x + i + 1, top + 1, ((int) (255 * (1 - (lo - top))) << 24) | rgb);
+                g.fill(x + i, bot, x + i + 1, bot + 1, ((int) (255 * (1 - (bot - hi))) << 24) | rgb);
+            }
+            prev = fy;
             last = yy;
         }
         return last;

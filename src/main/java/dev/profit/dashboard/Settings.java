@@ -29,6 +29,7 @@ public final class Settings {
     public int scenicScene = 4;
     public boolean useScenicBackgrounds = true;
     public boolean auctionHud = true;
+    public boolean oldScoreboard = false;
     public boolean skinFaces = true;
     public String displayName = "";
     public boolean chatColors = true;

@@ -829,7 +829,7 @@ extends Screen {
         if (Settings.S.useScenicBackgrounds) {
             ScenicBackgrounds.draw(guiGraphicsExtractor, this.fx, this.fy + 27, this.fw - 1, this.fh - 28, Settings.S.scenicScene, Settings.S.highSmoothness);
         } else {
-            Scenes.draw(guiGraphicsExtractor, this.fx, this.fy + 27, this.fw - 1, this.fh - 28, Scenes.SAKURA, Settings.S.highSmoothness ? System.currentTimeMillis() : 0L);
+            Scenes.draw(guiGraphicsExtractor, this.fx, this.fy + 27, this.fw - 1, this.fh - 28, Settings.S.scene, Settings.S.highSmoothness ? System.currentTimeMillis() : 0L);
         }
         guiGraphicsExtractor.fill(this.fx, this.fy + 1, this.fx + this.fw - 1, this.fy + 26, OverviewScreen.alpha(-15526625, 244));
         guiGraphicsExtractor.fill(this.fx, this.fy + 26, this.fx + this.fw - 1, this.fy + 27, -14934485);
@@ -903,7 +903,8 @@ extends Screen {
         }
         guiGraphicsExtractor.pose().popMatrix();
         if (!Settings.S.useScenicBackgrounds && Settings.S.highSmoothness) {
-            Scenes.stringLights(guiGraphicsExtractor, this.fx + 1, this.fy + 26, this.fw - 3, (double)System.currentTimeMillis() / 1000.0);
+            boolean moving = Math.floorMod(Settings.S.scene, Scenes.NAMES.length) == Scenes.SAKURA;   // lights only twinkle on Sakura
+            Scenes.stringLights(guiGraphicsExtractor, this.fx + 1, this.fy + 26, this.fw - 3, moving ? (double)System.currentTimeMillis() / 1000.0 : 0.0);
         }
         this.revealCurtain(guiGraphicsExtractor);
         this.text(guiGraphicsExtractor, "Display only. Data is read from your chat, nothing is sent to the server.", this.fx + 10, this.fy + this.fh - 11, -9538685, 0.7f, false);
@@ -2587,12 +2588,12 @@ extends Screen {
                 default: {
                     Button[] buttonArray5 = new Button[3];
                     buttonArray5[0] = this.btn("", n6 - 160, n5, 16, () -> {
-                        Settings.S.scene = Scenes.SAKURA;   // Sakura is the only animated background
+                        Settings.S.scene = Math.floorMod(Settings.S.scene - 1, Scenes.NAMES.length);
                         Settings.S.useScenicBackgrounds = false;
                         Settings.save();
                     });
                     buttonArray5[1] = this.btn("", n6 - 16, n5, 16, () -> {
-                        Settings.S.scene = Scenes.SAKURA;
+                        Settings.S.scene = Math.floorMod(Settings.S.scene + 1, Scenes.NAMES.length);
                         Settings.S.useScenicBackgrounds = false;
                         Settings.save();
                     });
@@ -2669,7 +2670,7 @@ extends Screen {
                 default: {
                     this.arrowBox(guiGraphicsExtractor, buttonArray[0], true, n, n2);
                     this.arrowBox(guiGraphicsExtractor, buttonArray[1], false, n, n2);
-                    String string = Scenes.NAMES[Scenes.SAKURA];
+                    String string = Scenes.NAMES[Math.floorMod(Settings.S.scene, Scenes.NAMES.length)];
                     int n12 = (buttonArray[0].getX() + 16 + buttonArray[1].getX()) / 2;
                     this.text(guiGraphicsExtractor, string, n12 - this.wb(string, 0.74f) / 2, n7 + 4, -1, 0.74f, true);
                 }

@@ -9,9 +9,7 @@ package dev.profit.dashboard;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public final class Scenes {
-    /** The only background that moves; the others are drawn as a still picture. */
-    public static final int SAKURA = 4;
-    public static final String[] NAMES = new String[]{"Midnight Pines", "Winter Pine & Lights", "Sunset Palms", "Dusk", "Sakura", "Maple", "Snowpine", "Savanna", "Moonbloom"};
+    public static final String[] NAMES = new String[]{"Winter Pine & Lights"};
     private static int clipL = Integer.MIN_VALUE;
     private static int clipR = Integer.MAX_VALUE;
 
@@ -39,60 +37,9 @@ public final class Scenes {
         if (w <= 0 || h <= 0) {
             return;
         }
-        if (Math.floorMod(idx, NAMES.length) != SAKURA) {
-            now = 0L;   // still picture
-        }
-        double t = (double)(now % 3600000L) / 1000.0;
-        switch (Math.floorMod(idx, NAMES.length)) {
-            case 0: {
-                Scenes.midnightPines(g, x, y, w, h, t);
-                break;
-            }
-            case 1: {
-                Scenes.winterPine(g, x, y, w, h, t);
-                break;
-            }
-            case 2: {
-                Scenes.sunsetPalms(g, x, y, w, h, t);
-                break;
-            }
-            case 3: {
-                Scenes.dusk(g, x, y, w, h, t);
-                break;
-            }
-            case 4: {
-                Scenes.sakura(g, x, y, w, h, t);
-                break;
-            }
-            case 5: {
-                Scenes.maple(g, x, y, w, h, t);
-                break;
-            }
-            case 6: {
-                Scenes.snowpine(g, x, y, w, h, t);
-                break;
-            }
-            case 7: {
-                Scenes.savanna(g, x, y, w, h, t);
-                break;
-            }
-            default: {
-                Scenes.moonbloom(g, x, y, w, h, t);
-            }
-        }
+        Scenes.winterPine(g, x, y, w, h, 0.0);   // the only background, drawn still
     }
 
-    private static void midnightPines(GuiGraphicsExtractor g, int x, int y, int w, int h, double t) {
-        Scenes.sky(g, x, y, w, h, 855572, 855572);
-        Scenes.pineRow(g, x, w, y + h, h * 42 / 100, 11, -15460827, -15460827, 7, t);
-        Scenes.pineRow(g, x, w, y + h + h / 20, h * 50 / 100, 7, -15724003, -15724003, 8, t);
-        for (int i = 0; i < 24; ++i) {
-            double sy = (Scenes.rnd(i, 91) * (double)h + t * (3.0 + Scenes.rnd(i, 92) * 4.0)) % (double)h;
-            int px = x + (int)(Scenes.rnd(i, 93) * (double)w);
-            int py = y + (int)sy;
-            g.fill(px, py, px + 1, py + 1, Scenes.alpha(0xFFFFFF, 50 + (int)(Scenes.rnd(i, 94) * 60.0)));
-        }
-    }
 
     private static void winterPine(GuiGraphicsExtractor g, int x, int y, int w, int h, double t) {
         Scenes.sky(g, x, y, w, h, 1708608, 3878016);
@@ -109,125 +56,12 @@ public final class Scenes {
         Scenes.stringLights(g, x, y, w, t);
     }
 
-    private static void sunsetPalms(GuiGraphicsExtractor g, int x, int y, int w, int h, double t) {
-        int ly;
-        int horizon = y + h * 62 / 100;
-        Scenes.sky(g, x, y, w, horizon - y, 2757712, 15241328);
-        int sunR = Math.max(10, h / 9);
-        int sunX = x + w / 2;
-        Scenes.disc(g, sunX, horizon, sunR + 6, 1090504848);
-        Scenes.disc(g, sunX, horizon, sunR, -12150);
-        Scenes.sky(g, x, horizon, w, y + h - horizon, 4860506, 1707818);
-        for (int i = 0; i < 14 && (ly = horizon + 3 + i * Math.max(2, (y + h - horizon) / 18)) < y + h; ++i) {
-            double s = 0.6 + 0.4 * Math.sin(t * 2.2 + (double)i * 1.3);
-            int lw = (int)(((double)sunR * 2.2 - (double)(i * sunR) * 0.09) * s);
-            if (lw <= 2) continue;
-            g.fill(sunX - lw / 2, ly, sunX + lw / 2, ly + 1, Scenes.alpha(16767392, 200 - i * 12));
-        }
-        g.fill(x, horizon, x + w, horizon + 1, 1627379888);
-        Scenes.birds(g, x, y, w, h * 45 / 100, 5, t);
-        Scenes.islandWithPalms(g, x + w / 7, horizon + h / 18, w / 5, h, -15069398, 3, t);
-        Scenes.islandWithPalms(g, x + w * 6 / 7, horizon + h / 22, w / 6, h, -15069398, 2, t + 1.0);
-    }
 
-    private static void dusk(GuiGraphicsExtractor g, int x, int y, int w, int h, double t) {
-        Scenes.sky(g, x, y, w, h, 922160, 8011358);
-        Scenes.stars(g, x, y, w, h / 2, 60, t, 0xFFFFFF);
-        Scenes.disc(g, x + w * 3 / 4, y + h * 55 / 100, Math.max(8, h / 14), -871798);
-        Scenes.birds(g, x, y, w, h * 50 / 100, 4, t);
-        Scenes.hills(g, x, y + h * 62 / 100, w, y + h, -12967096, h / 12, 0.008, 1);
-        Scenes.hills(g, x, y + h * 72 / 100, w, y + h, -14280902, h / 14, 0.011, 2);
-        Scenes.hills(g, x, y + h * 84 / 100, w, y + h, -15463390, h / 18, 0.015, 3);
-    }
 
-    private static void sakura(GuiGraphicsExtractor g, int x, int y, int w, int h, double t) {
-        Scenes.sky(g, x, y, w, h, 2364462, 9062002);
-        Scenes.disc(g, x + w / 5, y + h / 4, Math.max(8, h / 16), -468764);
-        Scenes.hills(g, x, y + h * 74 / 100, w, y + h, -12969414, h / 16, 0.01, 1);
-        g.fill(x, y + h * 88 / 100, x + w, y + h, -14807520);
-        for (int i = 0; i < 5; ++i) {
-            int tx = x + (int)((double)w * (0.08 + (double)i * 0.22 + Scenes.rnd(i, 3) * 0.06));
-            Scenes.blossomTree(g, tx, y + h * 90 / 100, (int)((double)h * (0.32 + Scenes.rnd(i, 4) * 0.12)), -14807520, -1533248, i);
-        }
-        Scenes.petals(g, x, y, w, h, 60, t, -739630, 0.6);
-    }
 
-    private static void maple(GuiGraphicsExtractor g, int x, int y, int w, int h, double t) {
-        Scenes.sky(g, x, y, w, h, 2363406, 10111518);
-        Scenes.disc(g, x + w * 7 / 10, y + h * 60 / 100, Math.max(10, h / 10), -874918);
-        Scenes.hills(g, x, y + h * 70 / 100, w, y + h, -11919852, h / 14, 0.009, 1);
-        g.fill(x, y + h * 88 / 100, x + w, y + h, -14676984);
-        int[] cols = new int[]{-4705762, -2595798, -7461864};
-        for (int i = 0; i < 6; ++i) {
-            int tx = x + (int)((double)w * (0.06 + (double)i * 0.18 + Scenes.rnd(i, 7) * 0.05));
-            Scenes.roundTree(g, tx, y + h * 90 / 100, (int)((double)h * (0.26 + Scenes.rnd(i, 8) * 0.12)), -14676984, cols[i % 3]);
-        }
-        Scenes.petals(g, x, y, w, h, 45, t, -2074582, 0.9);
-    }
 
-    private static void snowpine(GuiGraphicsExtractor g, int x, int y, int w, int h, double t) {
-        Scenes.sky(g, x, y, w, h, 660528, 3824266);
-        Scenes.stars(g, x, y, w, h / 2, 50, t, 14543103);
-        Scenes.disc(g, x + w * 4 / 5, y + h / 5, Math.max(8, h / 15), -1511169);
-        Scenes.hills(g, x, y + h * 70 / 100, w, y + h, -9796432, h / 16, 0.01, 1);
-        Scenes.pineRow(g, x, w, y + h * 86 / 100, h * 34 / 100, 8, -15062456, -2562828, 5, t);
-        g.fill(x, y + h * 86 / 100, x + w, y + h, -3614996);
-        Scenes.pineRow(g, x, w, y + h, h * 44 / 100, 5, -15853008, -1511174, 6, t);
-        Scenes.snow(g, x, y, w, h, 110, t, 2);
-    }
 
-    private static void savanna(GuiGraphicsExtractor g, int x, int y, int w, int h, double t) {
-        int horizon = y + h * 78 / 100;
-        Scenes.sky(g, x, y, w, horizon - y, 2756640, 14182954);
-        int r = Math.max(14, h / 6);
-        Scenes.disc(g, x + w / 2, horizon - r / 3, r + 8, 822067312);
-        Scenes.disc(g, x + w / 2, horizon - r / 3, r, -20400);
-        Scenes.birds(g, x, y, w, h * 45 / 100, 6, t);
-        g.fill(x, horizon, x + w, y + h, -14020088);
-        for (int i = 0; i < 4; ++i) {
-            int tx = x + (int)((double)w * (0.12 + (double)i * 0.26 + Scenes.rnd(i, 11) * 0.06));
-            Scenes.acacia(g, tx, horizon + 1, (int)((double)h * (0.18 + Scenes.rnd(i, 12) * 0.1)), -14020088);
-        }
-        for (int gx = 0; gx < w; gx += 3) {
-            int gh = 2 + (int)(Scenes.rnd(gx, 13) * 4.0);
-            int sway = (int)Math.round(Math.sin(t * 1.5 + (double)gx * 0.05));
-            g.fill(x + gx + sway, horizon - gh, x + gx + sway + 1, horizon, -14020088);
-        }
-    }
 
-    private static void moonbloom(GuiGraphicsExtractor g, int x, int y, int w, int h, double t) {
-        int i;
-        Scenes.sky(g, x, y, w, h, 525852, 2759248);
-        Scenes.stars(g, x, y, w, h * 2 / 3, 80, t, 0xFFFFFF);
-        int mr = Math.max(14, h / 7);
-        int mx = x + w * 3 / 4;
-        int my = y + h / 4;
-        Scenes.disc(g, mx, my, mr + 10, 415807743);
-        Scenes.disc(g, mx, my, mr + 5, 684243199);
-        Scenes.disc(g, mx, my, mr, -1186049);
-        Scenes.disc(g, mx + mr / 3, my - mr / 4, mr / 4, -2568208);
-        Scenes.hills(g, x, y + h * 80 / 100, w, y + h, -15594458, h / 18, 0.012, 1);
-        for (i = 0; i < 22; ++i) {
-            int fx = x + (int)(Scenes.rnd(i, 21) * (double)w);
-            int base = y + h - (int)(Scenes.rnd(i, 22) * (double)h / 14.0);
-            int fh = 8 + (int)(Scenes.rnd(i, 23) * (double)h / 10.0);
-            int sway = (int)Math.round(Math.sin(t * 1.2 + (double)i) * 1.5);
-            g.fill(fx, base - fh, fx + 1, base, -15594458);
-            double pulse = 0.6 + 0.4 * Math.sin(t * 2.0 + (double)i * 0.7);
-            int bc = i % 3 == 0 ? 13148415 : (i % 3 == 1 ? 15769824 : 10148095);
-            Scenes.disc(g, fx + sway, base - fh, 3, Scenes.alpha(bc, (int)(90.0 * pulse)));
-            g.fill(fx + sway - 1, base - fh - 1, fx + sway + 2, base - fh + 2, Scenes.alpha(bc, 230));
-        }
-        for (i = 0; i < 26; ++i) {
-            double px = (double)x + (Scenes.rnd(i, 31) * (double)w + Math.sin(t * 0.4 + (double)i) * 30.0) % (double)w;
-            double py = (double)y + (double)h * 0.5 + Scenes.rnd(i, 32) * (double)h * 0.45 + Math.cos(t * 0.6 + (double)i * 1.7) * 10.0;
-            double blink = 0.5 + 0.5 * Math.sin(t * 3.0 + (double)i * 2.1);
-            int ix = (int)px;
-            int iy = (int)py;
-            g.fill(ix - 1, iy - 1, ix + 2, iy + 2, Scenes.alpha(15269770, (int)(60.0 * blink)));
-            g.fill(ix, iy, ix + 1, iy + 1, Scenes.alpha(16056256, (int)(255.0 * blink)));
-        }
-    }
 
     private static void sky(GuiGraphicsExtractor g, int x, int y, int w, int h, int top, int bottom) {
         for (int i = 0; i < h; i += 3) {

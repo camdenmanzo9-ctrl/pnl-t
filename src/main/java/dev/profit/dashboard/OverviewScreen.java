@@ -43,7 +43,6 @@ import dev.profit.dashboard.Panels;
 import dev.profit.dashboard.PaymentLedger;
 import dev.profit.dashboard.PreviewPlayer;
 import dev.profit.dashboard.Scenes;
-import dev.profit.dashboard.ScenicBackgrounds;
 import dev.profit.dashboard.Settings;
 import dev.profit.dashboard.SettingsScreen;
 import java.time.Instant;
@@ -641,37 +640,12 @@ extends Screen {
         }
     }
 
-    // One background list: 0-8 = original scenes, 9-17 = picture artwork.
-    private static int backgroundIndex() {
-        int n = Scenes.NAMES.length;
-        return Settings.S.useScenicBackgrounds ? n + Math.floorMod(Settings.S.scenicScene, n) : Math.floorMod(Settings.S.scene, n);
-    }
+    // Winter Pine & Lights is the only background now.
+    private static int backgroundIndex() { return 0; }
 
-    private static void setBackground(int i) {
-        int n = Scenes.NAMES.length;
-        i = Math.floorMod(i, n * 2);
-        if (i < n) {
-            Settings.S.useScenicBackgrounds = false;
-            Settings.S.scene = i;
-        } else {
-            Settings.S.useScenicBackgrounds = true;
-            Settings.S.scenicScene = i - n;
-        }
-        Settings.save();
-    }
+    private static void setBackground(int i) { }
 
-    private static String backgroundName(int i) {
-        int n = Scenes.NAMES.length;
-        if (i < n) return Scenes.NAMES[i];
-        return (i - n == 4 ? "Cherry Blossom" : Scenes.NAMES[i - n]) + " (Art)";
-    }
-
-    private void selectBackground(int n) {
-        Settings.S.scenicScene = Math.floorMod(Settings.S.scenicScene + n, Scenes.NAMES.length);
-        Settings.S.useScenicBackgrounds = true;
-        Settings.S.highSmoothness = true;
-        Settings.save();
-    }
+    private static String backgroundName(int i) { return Scenes.NAMES[0]; }
 
     private void initGeneral() {
         int n = this.contentY() + 48;
@@ -834,11 +808,7 @@ extends Screen {
     public void extractBackground(GuiGraphicsExtractor guiGraphicsExtractor, int n, int n2, float f) {
         guiGraphicsExtractor.fill(0, 0, this.width, this.height, -15921644);
         OverviewScreen.round(guiGraphicsExtractor, this.ox, this.fy, this.ow, this.fh, 6, OverviewScreen.alpha(-14934485, 192));
-        if (Settings.S.useScenicBackgrounds) {
-            ScenicBackgrounds.draw(guiGraphicsExtractor, this.fx, this.fy + 27, this.fw - 1, this.fh - 28, Settings.S.scenicScene, false);   // pictures stay still
-        } else {
-            Scenes.draw(guiGraphicsExtractor, this.fx, this.fy + 27, this.fw - 1, this.fh - 28, Settings.S.scene, Settings.S.highSmoothness ? System.currentTimeMillis() : 0L);
-        }
+        Scenes.draw(guiGraphicsExtractor, this.fx, this.fy + 27, this.fw - 1, this.fh - 28, 0, 0L);
         guiGraphicsExtractor.fill(this.fx, this.fy + 1, this.fx + this.fw - 1, this.fy + 26, OverviewScreen.alpha(-15526625, 244));
         guiGraphicsExtractor.fill(this.fx, this.fy + 26, this.fx + this.fw - 1, this.fy + 27, -14934485);
         guiGraphicsExtractor.fill(this.fx, this.fy + this.fh - 16, this.fx + this.fw - 1, this.fy + this.fh - 1, OverviewScreen.alpha(-15526625, 216));
@@ -910,9 +880,8 @@ extends Screen {
             }
         }
         guiGraphicsExtractor.pose().popMatrix();
-        if (!Settings.S.useScenicBackgrounds && Settings.S.highSmoothness) {
-            boolean moving = Math.floorMod(Settings.S.scene, Scenes.NAMES.length) == Scenes.SAKURA;   // lights only twinkle on Sakura
-            Scenes.stringLights(guiGraphicsExtractor, this.fx + 1, this.fy + 26, this.fw - 3, moving ? (double)System.currentTimeMillis() / 1000.0 : 0.0);
+        if (Settings.S.highSmoothness) {
+            Scenes.stringLights(guiGraphicsExtractor, this.fx + 1, this.fy + 26, this.fw - 3, 0.0);   // still lights
         }
         this.revealCurtain(guiGraphicsExtractor);
         this.text(guiGraphicsExtractor, "Display only. Data is read from your chat, nothing is sent to the server.", this.fx + 10, this.fy + this.fh - 11, -9538685, 0.7f, false);
@@ -2493,7 +2462,6 @@ extends Screen {
         arrayList.add(new SRow("RAKEBACK", settings.rakePct + "% back once a player has lost " + Money.format(settings.rakeMin) + ". Who is close and what you owe (Balance HUD mod)", 0, () -> Panels.rakeback, bl -> {
             Panels.rakeback = bl;
         }));
-        arrayList.add(new SRow("BACKGROUND", "All backgrounds in one list. Only Sakura moves.", 3, null, null));
         return arrayList;
     }
 
@@ -2586,7 +2554,7 @@ extends Screen {
     }
 
     private void drawStreamer(GuiGraphicsExtractor guiGraphicsExtractor, int n, int n2) {
-        this.pageTitle(guiGraphicsExtractor, "Streamer", "Turn your Balance HUD panels on or off and pick a background. Everything else is in Settings.");
+        this.pageTitle(guiGraphicsExtractor, "Streamer", "Turn your Balance HUD panels on or off. Everything else is in Settings.");
         List<SRow> list = this.streamerRows();
         int n3 = this.fx + 10;
         int n4 = this.fw - 20;

@@ -25,7 +25,7 @@ import net.fabricmc.loader.api.FabricLoader;
 
 public final class PaymentLedger {
     private static final long KEEP_MS = 3024000000L;
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private static final Gson GSON = new GsonBuilder().create();   // compact: smaller file, faster to write
     private static final Path FILE = FabricLoader.getInstance().getConfigDir().resolve("bettors-dashboard.json");
     private static Data data = new Data();
     private static long lastSave = 0L;
@@ -65,7 +65,29 @@ public final class PaymentLedger {
         }
     }
 
+    // Busy betting: write the file at most once every 3 seconds instead of after every payment.
+    private static boolean dirty = false;
+    private static long dirtySince = 0L;
+
+    public static void saveSoon() {
+        if (!dirty) {
+            dirty = true;
+            dirtySince = System.currentTimeMillis();
+        }
+    }
+
+    /** Called every tick. */
+    public static void tickSave() {
+        if (dirty && System.currentTimeMillis() - dirtySince >= 3000L) PaymentLedger.save();
+    }
+
+    /** Called when you leave a server or close the game, so nothing is lost. */
+    public static void flush() {
+        if (dirty) PaymentLedger.save();
+    }
+
     public static void save() {
+        dirty = false;
         try {
             Files.createDirectories(FILE.getParent(), new FileAttribute[0]);
             Files.writeString(FILE, (CharSequence)GSON.toJson((Object)data), new OpenOption[0]);
@@ -90,7 +112,7 @@ public final class PaymentLedger {
         while (PaymentLedger.data.log.size() > 20000) {
             PaymentLedger.data.log.remove(0);
         }
-        PaymentLedger.save();
+        PaymentLedger.saveSoon();
     }
 
     public static long balance() {
@@ -103,7 +125,7 @@ public final class PaymentLedger {
         while (PaymentLedger.data.balHist.size() > 2000) {
             PaymentLedger.data.balHist.remove(0);
         }
-        PaymentLedger.save();
+        PaymentLedger.saveSoon();
     }
 
     public static void adjustBalance(long delta) {

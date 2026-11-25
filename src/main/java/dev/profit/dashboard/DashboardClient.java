@@ -172,7 +172,10 @@ implements ClientModInitializer {
                 PaymentListener.handle(component.getString());
             }
         });
+        net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents.CLIENT_STOPPING.register(client -> PaymentLedger.flush());
+        net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> PaymentLedger.flush());
         ClientTickEvents.END_CLIENT_TICK.register(minecraft -> {
+            PaymentLedger.tickSave();
             while (winKey.consumeClick()) {
                 if (minecraft.screen != null) continue;
                 Alerts.addWin();

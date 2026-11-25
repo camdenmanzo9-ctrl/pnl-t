@@ -566,8 +566,13 @@ public class BalanceHudClient implements ClientModInitializer {
     static final Style HUD_STYLE = Style.EMPTY.withFont(
             new FontDescription.Resource(Identifier.fromNamespaceAndPath("balancehud", "hud")));
 
+    // The profit HUD uses Inter Bold; the other panels keep the original font.
+    static final Style PROFIT_STYLE = Style.EMPTY.withFont(
+            new FontDescription.Resource(Identifier.fromNamespaceAndPath("balancehud", "hud_profit")));
+    static boolean profitFont = false;
+
     static Component hudText(String s) {
-        return Component.literal(s).setStyle(HUD_STYLE);
+        return Component.literal(s).setStyle(profitFont ? PROFIT_STYLE : HUD_STYLE);
     }
 
     static int width(Font f, String s) {
@@ -689,7 +694,10 @@ public class BalanceHudClient implements ClientModInitializer {
         g.pose().pushMatrix();
         g.pose().scale(SCALE, SCALE);
         if (!balHidden && DashboardPanels.enabled(0)) scaledPanel(g, BAL[0], BAL[1], PANEL_SCALES[0], () -> renderBalance(g, f));
-        if (!profitHidden && DashboardPanels.enabled(1)) scaledPanel(g, profitX(), PROFIT_POS[1], PANEL_SCALES[1], () -> renderProfit(g, f));
+        if (!profitHidden && DashboardPanels.enabled(1)) scaledPanel(g, profitX(), PROFIT_POS[1], PANEL_SCALES[1], () -> {
+            profitFont = true;
+            try { renderProfit(g, f); } finally { profitFont = false; }
+        });
         if (!rakeHidden && DashboardPanels.enabled(2)) scaledPanel(g, RAKE_POS[0], RAKE_POS[1], PANEL_SCALES[2], () -> renderRake(g, f));
         if (!aucHidden) scaledPanel(g, AUC_POS[0], AUC_POS[1], PANEL_SCALES[3], () -> renderAuction(g, f));
         g.pose().popMatrix();
@@ -803,8 +811,11 @@ public class BalanceHudClient implements ClientModInitializer {
         else netsPage(g, f, x, y, w);
 
         int py = y + h - 11;
-        for (int i = 0; i < PAGES; i++)
-            dot(g, x + 10 + i * 7, py + 2, 2, i == page ? PINK : 0x40FFFFFF);
+        // small sharp page dots; the current page is white
+        for (int i = 0; i < PAGES; i++) {
+            int dx = x + 9 + i * 6;
+            g.fill(dx, py + 1, dx + 3, py + 4, i == page ? WHITE : 0x55FFFFFF);
+        }
         int bx = x + 8 + PAGES * 8 + 6, ex = x + w - 8;
         g.fill(bx, py + 2, ex, py + 3, 0x10FFFFFF);
         g.fill(bx, py + 2, bx + (int) ((ex - bx) * prog), py + 3, 0x66D985B3);
@@ -861,10 +872,8 @@ public class BalanceHudClient implements ClientModInitializer {
         int gap = 6, colW = (w - 16 - gap) / 2;
         int ty = y + 146, th = 80;
         int lx = x + 8, rx = x + 8 + colW + gap;
-        card(g, lx, ty, colW, th, GREEN);
-        card(g, rx, ty, colW, th, RED);
-        small(g, f, "T O P  W I N N E R S", lx + 5, ty + 5, GREEN);
-        small(g, f, "T O P  L O S E R S", rx + 5, ty + 5, RED);
+        small(g, f, "TOP WINNERS", lx + 5, ty + 5, GREEN);
+        small(g, f, "TOP LOSERS", rx + 5, ty + 5, RED);
         for (int i = 0; i < 5; i++) {
             int r = ty + 19 + i * 11;
             if (i < ups.size()) {

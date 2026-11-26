@@ -48,6 +48,7 @@ public class BalanceHudClient implements ClientModInitializer {
     static final Map<String, Double> NETS = new LinkedHashMap<>();
     static double PROFIT_BASE = 0;                                    // set by /profit reset: the profit shown = In - Out - this
     static double IN_TOTAL = 0, OUT_TOTAL = 0;                       // money paid to you / paid out by you
+    static long LAST_RESET = 0;                                       // profit, In/Out and chart reset every 24h (rakeback is never touched)
     static final List<Double> HISTORY = new ArrayList<>();           // running profit after each payment
     record Bet(String name, double amount, long ts) {}                  // amount: + = they paid you (they lost), - = you paid them (they won)
     static final List<Bet> RECENT = new ArrayList<>();                // newest first
@@ -459,6 +460,7 @@ public class BalanceHudClient implements ClientModInitializer {
         sb.append("pos,profit,").append(PROFIT_POS[0]).append(',').append(PROFIT_POS[1]).append('\n');
         sb.append("tot,").append(IN_TOTAL).append(',').append(OUT_TOTAL).append('\n');
         sb.append("base,").append(PROFIT_BASE).append('\n');
+        sb.append("lastreset,").append(LAST_RESET).append('\n');
         for (double h : HISTORY) sb.append("hist,").append(h).append('\n');
         RAKE_BASE.forEach((n, v) -> sb.append("rbase,").append(n).append(',').append(v).append('\n'));
         sb.append("pos,auc,").append(AUC_POS[0]).append(',').append(AUC_POS[1]).append('\n');
@@ -508,6 +510,7 @@ public class BalanceHudClient implements ClientModInitializer {
                         case "tot" -> { IN_TOTAL = Double.parseDouble(p[1]); OUT_TOTAL = Double.parseDouble(p[2]); }
                         case "rbase" -> RAKE_BASE.put(p[1], Double.parseDouble(p[2]));
                         case "base" -> PROFIT_BASE = Double.parseDouble(p[1]);
+                        case "lastreset" -> LAST_RESET = Long.parseLong(p[1]);
                         case "hist" -> HISTORY.add(Double.parseDouble(p[1]));
                         case "rec" -> RECENT.add(new Bet(p[1], Double.parseDouble(p[2]), p.length > 3 ? Long.parseLong(p[3]) : System.currentTimeMillis()));
                         default -> { }
@@ -696,7 +699,24 @@ public class BalanceHudClient implements ClientModInitializer {
         return (h / 24) + "d";
     }
 
+    /** Every 24 hours after the last reset: profit, In/Out and the chart start fresh. Player nets and rakeback stay. */
+    static void dailyReset() {
+        long now = System.currentTimeMillis();
+        if (LAST_RESET == 0) {
+            LAST_RESET = now;
+            save();
+        } else if (now - LAST_RESET >= 86_400_000L) {
+            IN_TOTAL = 0;
+            OUT_TOTAL = 0;
+            PROFIT_BASE = 0;
+            HISTORY.clear();
+            LAST_RESET = now;
+            save();
+        }
+    }
+
     static void render(GuiGraphicsExtractor g) {
+        dailyReset();
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.options.hideGui) return;
         Font f = mc.font;

@@ -803,7 +803,7 @@ public class BalanceHudClient implements ClientModInitializer {
         int w = 220, h = 286;
         int x = profitX();
         int y = PROFIT_POS[1];
-        panel(g, x, y, w, h, true);
+        panel(g, x, y, w, h, true, DashboardPanels.balanceBorder());   // TEST outline color
 
         if (balance >= 0) {
             String bt = "Bal " + money2(balance);
@@ -997,6 +997,15 @@ public class BalanceHudClient implements ClientModInitializer {
     }
 
     // ---- rakeback ----
+    /** Hue 0..1 to a bright color. */
+    static int rainbow(double hue) {
+        double h = (hue % 1.0 + 1.0) % 1.0 * 6.0;
+        int r = (int) (255 * Math.max(0, Math.min(1, Math.abs(h - 3) - 1)));
+        int gr = (int) (255 * Math.max(0, Math.min(1, 2 - Math.abs(h - 2))));
+        int b = (int) (255 * Math.max(0, Math.min(1, 2 - Math.abs(h - 4))));
+        return 0xFF000000 | r << 16 | gr << 8 | b;
+    }
+
     static void renderRake(GuiGraphicsExtractor g, Font f) {
         List<Map.Entry<String, Double>> rows = new ArrayList<>();
         for (Map.Entry<String, Double> e : NETS.entrySet())
@@ -1007,7 +1016,7 @@ public class BalanceHudClient implements ClientModInitializer {
         int x = RAKE_POS[0], y = RAKE_POS[1];
         int w = 180;
         int h = 24 + Math.max(1, rows.size()) * 17 + 2;
-        panel(g, x, y, w, h, true);
+        panel(g, x, y, w, h, true, DashboardPanels.balanceBorder());   // TEST outline color
         spaced(g, f, "RAKEBACK", x + 8, y + 7, TITLE);
         small(g, f, RAKE_RULE, x + w - 8 - (int) (width(f, RAKE_RULE) * 0.7f), y + 8, MUTED);
         int ry = y + 22;
@@ -1024,8 +1033,10 @@ public class BalanceHudClient implements ClientModInitializer {
             text(g, f, t, x + w - 8 - width(f, t), ry, owed ? GREEN : WHITE, false);
             int by = ry + 10;
             g.fill(x + 8, by, x + w - 8, by + 2, 0xFF303946);
-            int bw = (int) ((w - 16) * Math.min(1.0, loss / RAKE_TARGET));
-            if (bw > 0) g.fill(x + 8, by, x + 8 + bw, by + 2, TITLE);
+            int full = w - 16;
+            int bw = (int) (full * Math.min(1.0, loss / RAKE_TARGET));
+            // rainbow progress: red at the start, through orange/yellow/green/blue, violet at 100%
+            for (int i = 0; i < bw; i++) g.fill(x + 8 + i, by, x + 9 + i, by + 2, rainbow(0.83 * i / Math.max(1, full - 1)));
             ry += 17;
         }
     }

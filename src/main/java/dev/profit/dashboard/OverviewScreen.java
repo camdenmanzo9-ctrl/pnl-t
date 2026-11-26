@@ -2459,13 +2459,13 @@ extends Screen {
         arrayList.add(new SRow("BALANCE BOX", "Your balance box with your name (Balance HUD mod)", 0, () -> Panels.balance, bl -> {
             Panels.balance = bl;
         }));
-        arrayList.add(new SRow("BALANCE OUTLINE (TEST)", "Outline color of your balance box. Testing only.", 3, null, null));
         arrayList.add(new SRow("PROFIT TRACKER", "The profit panel with the chart, top winners / losers and recent bets (Balance HUD mod)", 0, () -> Panels.profit, bl -> {
             Panels.profit = bl;
         }));
         arrayList.add(new SRow("RAKEBACK", settings.rakePct + "% back once a player has lost " + Money.format(settings.rakeMin) + ". Who is close and what you owe (Balance HUD mod)", 0, () -> Panels.rakeback, bl -> {
             Panels.rakeback = bl;
         }));
+        arrayList.add(new SRow("OUTLINE COLOR (TEST)", "Outline color of the Balance, Profit and Rakeback boxes. Testing only.", 3, null, null));
         return arrayList;
     }
 

@@ -764,11 +764,8 @@ public class BalanceHudClient implements ClientModInitializer {
         int yz = y + (int) (max / (max - min) * (h - 1));
         for (int dx = 0; dx < w; dx += 6) g.fill(x + dx, yz, x + Math.min(w, dx + 2), yz + 1, 0x16FFFFFF);
         if (n == 0) return yz;
-        // One continuous mint/pink trace, with straight segments like the reference.
-        boolean up = HISTORY.get(n - 1) >= 0;
-        int lineColor = up ? GREEN : RED;
-        int rgb = lineColor & 0xFFFFFF;
-        // Thin, smooth (anti-aliased) 1px line with a faint fill underneath.
+        // Thin, smooth (anti-aliased) 1px line: green while you're up, pink while you're down,
+        // with a matching tint between the line and $0.
         double prev = -1;
         int last = yz;
         for (int i = 0; i < w; i++) {
@@ -779,7 +776,9 @@ public class BalanceHudClient implements ClientModInitializer {
             double v = HISTORY.get(i0) + (HISTORY.get(i1) - HISTORY.get(i0)) * fraction;
             double fy = y + (max - v) / (max - min) * (h - 1);
             int yy = (int) Math.round(fy);
-            g.fill(x + i, Math.min(yy, yz), x + i + 1, Math.max(yy, yz) + 1, 0x08000000 | rgb);
+            int lineColor = v >= 0 ? GREEN : RED;
+            int rgb = lineColor & 0xFFFFFF;
+            g.fill(x + i, Math.min(yy, yz), x + i + 1, Math.max(yy, yz) + 1, 0x1C000000 | rgb);
             double a = i == 0 ? fy : prev, b = fy;
             double lo = Math.min(a, b), hi = Math.max(a, b);
             if (hi - lo < 1.0) {

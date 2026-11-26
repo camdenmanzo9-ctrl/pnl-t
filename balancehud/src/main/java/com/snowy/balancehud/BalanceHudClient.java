@@ -97,7 +97,7 @@ public class BalanceHudClient implements ClientModInitializer {
     static boolean awaiting = false;
     static long requestedAt = 0;
 
-    static final int TITLE = 0xFFE5A5C9, WHITE = 0xFFF2F3F7, MUTED = 0xFF9AA0AD, GREEN = 0xFF77F5A2, RED = 0xFFEE739E, PINK = 0xFFD985B3;
+    static final int TITLE = 0xFFE5A5C9, WHITE = 0xFFF2F3F7, MUTED = 0xFF9AA0AD, GREEN = 0xFF46D57E, RED = 0xFFF2557D, PINK = 0xFFD985B3;
 
     @Override
     public void onInitializeClient() {

@@ -825,10 +825,10 @@ public class BalanceHudClient implements ClientModInitializer {
         else netsPage(g, f, x, y, w);
 
         int py = y + h - 11;
-        // small sharp page dots; the current page is white
+        // small sharp page dots; the current page is pink
         for (int i = 0; i < PAGES; i++) {
             int dx = x + 9 + i * 6;
-            g.fill(dx, py + 1, dx + 3, py + 4, i == page ? WHITE : 0x55FFFFFF);
+            g.fill(dx, py + 1, dx + 3, py + 4, i == page ? PINK : 0x55FFFFFF);
         }
         int bx = x + 8 + PAGES * 8 + 6, ex = x + w - 8;
         g.fill(bx, py + 2, ex, py + 3, 0x10FFFFFF);

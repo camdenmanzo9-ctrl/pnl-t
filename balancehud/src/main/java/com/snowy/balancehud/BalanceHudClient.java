@@ -595,19 +595,24 @@ public class BalanceHudClient implements ClientModInitializer {
     static void panel(GuiGraphicsExtractor g, int x, int y, int w, int h, boolean transparent, int border) {
         int bg = transparent ? 0xE6101720 : 0xFF101720;
         int bd = border != 0 ? border : transparent ? 0x80515A67 : 0xFF515A67;
-        g.fill(x + 2, y, x + w - 2, y + 1, bg);
-        g.fill(x + 1, y + 1, x + w - 1, y + 2, bg);
-        g.fill(x, y + 2, x + w, y + h - 2, bg);
-        g.fill(x + 1, y + h - 2, x + w - 1, y + h - 1, bg);
-        g.fill(x + 2, y + h - 1, x + w - 2, y + h, bg);
-        g.fill(x + 2, y, x + w - 2, y + 1, bd);
-        g.fill(x + 2, y + h - 1, x + w - 2, y + h, bd);
-        g.fill(x, y + 2, x + 1, y + h - 2, bd);
-        g.fill(x + w - 1, y + 2, x + w, y + h - 2, bd);
-        g.fill(x + 1, y + 1, x + 2, y + 2, bd);
-        g.fill(x + w - 2, y + 1, x + w - 1, y + 2, bd);
-        g.fill(x + 1, y + h - 2, x + 2, y + h - 1, bd);
-        g.fill(x + w - 2, y + h - 2, x + w - 1, y + h - 1, bd);
+        // bubbly rounded corners (radius 6) with the outline following the curve
+        int r = Math.min(6, Math.min(w, h) / 2);
+        int[] inset = new int[h];
+        for (int row = 0; row < h; row++) {
+            int d = row < r ? r - row : row >= h - r ? row - (h - r) + 1 : 0;
+            inset[row] = d == 0 ? 0 : r - (int) Math.round(Math.sqrt(r * r - (d - 0.5) * (d - 0.5)));
+        }
+        for (int row = 0; row < h; row++) {
+            int in = inset[row];
+            g.fill(x + in, y + row, x + w - in, y + row + 1, bg);
+            if (row == 0 || row == h - 1) {
+                g.fill(x + in, y + row, x + w - in, y + row + 1, bd);
+                continue;
+            }
+            int reach = Math.max(in + 1, Math.max(inset[row - 1], inset[row + 1]));
+            g.fill(x + in, y + row, x + reach, y + row + 1, bd);
+            g.fill(x + w - reach, y + row, x + w - in, y + row + 1, bd);
+        }
     }
 
     static void roundedFill(GuiGraphicsExtractor g, int x, int y, int w, int h, int radius, int color) {

@@ -2,7 +2,7 @@
   "providers": [
     {
       "type": "ttf",
-      "file": "balancehud:poppins-medium.ttf",
+      "file": "balancehud:poppins-bold.ttf",
       "shift": [
         0.0,
         0.0

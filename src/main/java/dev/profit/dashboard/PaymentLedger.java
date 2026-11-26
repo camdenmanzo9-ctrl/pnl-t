@@ -115,6 +115,11 @@ public final class PaymentLedger {
         PaymentLedger.saveSoon();
     }
 
+    /** Payments from the last 5 weeks (read only). */
+    public static java.util.List<Payment> recentLog() {
+        return java.util.Collections.unmodifiableList(PaymentLedger.data.log);
+    }
+
     public static long balance() {
         return PaymentLedger.data.balance;
     }

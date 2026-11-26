@@ -1154,7 +1154,15 @@ extends Screen {
         for (PaymentLedger.Entry object52 : PaymentLedger.entries(false)) {
             l4 += object52.paidYou;
         }
-        this.card(guiGraphicsExtractor, n16, n10, n13, n11, "VOLUME", Money.format(l4), "all time paid to you", -13773633, -1, -7696482, null);
+        // win %: payment received = you won, payment sent = you lost (last 5 weeks of payments)
+        int wonBets = 0;
+        int allBets = 0;
+        for (PaymentLedger.Payment pay : PaymentLedger.recentLog()) {
+            if (pay.paidYou > 0L) { ++wonBets; ++allBets; }
+            else if (pay.youPaid > 0L) { ++allBets; }
+        }
+        String winLine = allBets == 0 ? "no bets yet" : String.format(Locale.ROOT, "You won %.1f%% \u00b7 %d of %d bets", wonBets * 100.0 / allBets, wonBets, allBets);
+        this.card(guiGraphicsExtractor, n16, n10, n13, n11, "VOLUME", Money.format(l4), winLine, -13773633, -1, -7696482, null);
         int[] nArray = this.feedBox();
         this.box(guiGraphicsExtractor, nArray[0], nArray[1], nArray[2], nArray[3], -15526625, -14934485);
         OverviewScreen.topGlow(guiGraphicsExtractor, nArray[0], nArray[1], nArray[2], PURPLE);

@@ -16,6 +16,26 @@ final class DashboardPanels {
         }
     }
 
+    // TEST: outline color picked in the dashboard's Streamer tab (0 = use default)
+    private static final java.lang.reflect.Method BORDER = findBorder();
+
+    private static java.lang.reflect.Method findBorder() {
+        try {
+            return Class.forName("dev.profit.dashboard.Panels").getMethod("balBorderColor");
+        } catch (ReflectiveOperationException | LinkageError e) {
+            return null;
+        }
+    }
+
+    static int balanceBorder() {
+        if (BORDER == null) return 0;
+        try {
+            return (int) BORDER.invoke(null);
+        } catch (ReflectiveOperationException | LinkageError e) {
+            return 0;
+        }
+    }
+
     static boolean enabled(int panel) {
         if (SWITCHES == null) return true;
         try {

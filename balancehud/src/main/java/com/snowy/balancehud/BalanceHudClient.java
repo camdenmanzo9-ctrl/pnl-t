@@ -589,8 +589,12 @@ public class BalanceHudClient implements ClientModInitializer {
     }
 
     static void panel(GuiGraphicsExtractor g, int x, int y, int w, int h, boolean transparent) {
+        panel(g, x, y, w, h, transparent, 0);
+    }
+
+    static void panel(GuiGraphicsExtractor g, int x, int y, int w, int h, boolean transparent, int border) {
         int bg = transparent ? 0xE6101720 : 0xFF101720;
-        int bd = transparent ? 0x80515A67 : 0xFF515A67;
+        int bd = border != 0 ? border : transparent ? 0x80515A67 : 0xFF515A67;
         g.fill(x + 2, y, x + w - 2, y + 1, bg);
         g.fill(x + 1, y + 1, x + w - 1, y + 2, bg);
         g.fill(x, y + 2, x + w, y + h - 2, bg);
@@ -723,7 +727,7 @@ public class BalanceHudClient implements ClientModInitializer {
         String amount = balance < 0 ? "$---" : String.format(Locale.US, "$%,d", (long) BALANCE_COUNTER.value(System.nanoTime()));
         String finalAmount = balance < 0 ? amount : String.format(Locale.US, "$%,d", (long) balance);
         int w = Math.max(200, (int) (width(f, finalAmount) * 1.8f) + 48);
-        panel(g, X, Y, w, 48);
+        panel(g, X, Y, w, 48, false, DashboardPanels.balanceBorder());   // TEST outline color
         spaced(g, f, NAME.toUpperCase(), X + 10, Y + 7, TITLE);
         g.pose().pushMatrix();
         g.pose().translate(X + 10, Y + 18);

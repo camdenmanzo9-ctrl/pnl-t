@@ -640,12 +640,15 @@ extends Screen {
         }
     }
 
-    // Winter Pine & Lights is the only background now.
-    private static int backgroundIndex() { return 0; }
+    // TEST: arrow picker row in the Streamer tab = Balance HUD outline color.
+    private static int backgroundIndex() { return Math.floorMod(Panels.balBorder, Panels.BORDER_NAMES.length); }
 
-    private static void setBackground(int i) { }
+    private static void setBackground(int i) {
+        Panels.balBorder = Math.floorMod(i, Panels.BORDER_NAMES.length);
+        Panels.save();
+    }
 
-    private static String backgroundName(int i) { return Scenes.NAMES[0]; }
+    private static String backgroundName(int i) { return Panels.BORDER_NAMES[i]; }
 
     private void initGeneral() {
         int n = this.contentY() + 48;
@@ -2456,6 +2459,7 @@ extends Screen {
         arrayList.add(new SRow("BALANCE BOX", "Your balance box with your name (Balance HUD mod)", 0, () -> Panels.balance, bl -> {
             Panels.balance = bl;
         }));
+        arrayList.add(new SRow("BALANCE OUTLINE (TEST)", "Outline color of your balance box. Testing only.", 3, null, null));
         arrayList.add(new SRow("PROFIT TRACKER", "The profit panel with the chart, top winners / losers and recent bets (Balance HUD mod)", 0, () -> Panels.profit, bl -> {
             Panels.profit = bl;
         }));

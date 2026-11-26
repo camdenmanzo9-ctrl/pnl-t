@@ -20,6 +20,24 @@ public final class Panels {
     public static boolean profit = true;
     public static boolean rakeback = true;
 
+    // TEST: Balance HUD outline color (Streamer tab). 0 = default gray.
+    public static int balBorder = 0;
+    public static final String[] BORDER_NAMES = {"Default", "Green", "Mint", "Pink", "Purple", "Blue", "Cyan", "Gold", "Orange", "Red", "White", "Rainbow"};
+    private static final int[] BORDER_COLORS = {0xFF515A67, 0xFF4DF58C, 0xFF98FFD6, 0xFFF2557D, 0xFFA77BFF, 0xFF4C8DFF, 0xFF3FE0F0, 0xFFFFC83D, 0xFFFF8A3D, 0xFFFF4040, 0xFFFFFFFF, 0};
+
+    /** Read by Balance HUD. */
+    public static int balBorderColor() {
+        int i = Math.floorMod(balBorder, BORDER_COLORS.length);
+        if (BORDER_NAMES[i].equals("Rainbow")) {
+            double h = (System.currentTimeMillis() % 4000L) / 4000.0 * 6.0;
+            int r = (int) (255 * Math.max(0, Math.min(1, Math.abs(h - 3) - 1)));
+            int g = (int) (255 * Math.max(0, Math.min(1, 2 - Math.abs(h - 2))));
+            int b = (int) (255 * Math.max(0, Math.min(1, 2 - Math.abs(h - 4))));
+            return 0xFF000000 | r << 16 | g << 8 | b;
+        }
+        return BORDER_COLORS[i];
+    }
+
     private Panels() {
     }
 
@@ -47,6 +65,10 @@ public final class Panels {
                     }
                     case "rakeback": {
                         rakeback = bl;
+                        break;
+                    }
+                    case "bal_border": {
+                        try { balBorder = Integer.parseInt(stringArray[1].trim()); } catch (NumberFormatException e) { balBorder = 0; }
                     }
                 }
             }
@@ -56,7 +78,7 @@ public final class Panels {
     public static void save() {
         try {
             Files.createDirectories(FILE.getParent(), new FileAttribute[0]);
-            Files.writeString(FILE, (CharSequence)("hide_all=" + (allHidden ? "on" : "off") + "\nbalance=" + (balance ? "on" : "off") + "\nprofit=" + (profit ? "on" : "off") + "\nrakeback=" + (rakeback ? "on" : "off") + "\n"), new OpenOption[0]);
+            Files.writeString(FILE, (CharSequence)("hide_all=" + (allHidden ? "on" : "off") + "\nbalance=" + (balance ? "on" : "off") + "\nprofit=" + (profit ? "on" : "off") + "\nrakeback=" + (rakeback ? "on" : "off") + "\nbal_border=" + balBorder + "\n"), new OpenOption[0]);
         } catch (Exception exception) {}
     }
 }

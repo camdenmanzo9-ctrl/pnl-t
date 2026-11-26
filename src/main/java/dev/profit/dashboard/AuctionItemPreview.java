@@ -50,14 +50,18 @@ final class AuctionItemPreview {
         itemEntityRenderState.count = 1;
         itemEntityRenderState.lightCoords = 0xF000F0;
         AABB aABB = itemEntityRenderState.item.getModelBoundingBox();
-        double d = Math.toRadians(45.0);
+        // spin (one turn every 4 seconds) + gentle float
+        double time = (double)(System.currentTimeMillis() % 40000L) / 1000.0;
+        double d = time * (Math.PI * 2.0 / 4.0);
+        float bob = (float)Math.sin(time * Math.PI) * 0.06f;
         double d2 = Math.toRadians(28.0);
-        double d3 = Math.abs(Math.cos(d)) * aABB.getXsize() + Math.abs(Math.sin(d)) * aABB.getZsize();
-        double d4 = Math.abs(Math.sin(d)) * aABB.getXsize() + Math.abs(Math.cos(d)) * aABB.getZsize();
+        // size for the widest angle so the item never gets cut off while spinning
+        double d3 = Math.sqrt(aABB.getXsize() * aABB.getXsize() + aABB.getZsize() * aABB.getZsize());
+        double d4 = d3;
         double d5 = Math.abs(Math.cos(d2)) * aABB.getYsize() + Math.abs(Math.sin(d2)) * d4;
         float f = (float)Math.max(0.25, Math.max(d3, d5));
-        float f2 = (float)n3 * 0.88f / f;
-        float f3 = (float)aABB.getYsize() / 2.0f + 0.1625f;
+        float f2 = (float)n3 * 0.80f / f;
+        float f3 = (float)aABB.getYsize() / 2.0f + 0.1625f + bob;
         Quaternionf quaternionf = new Quaternionf().rotateZ((float)Math.PI).rotateX((float)d2).rotateY((float)d);
         guiGraphicsExtractor.entity((EntityRenderState)itemEntityRenderState, f2, new Vector3f(0.0f, f3, 0.0f), quaternionf, new Quaternionf(), n, n2, n + n3, n2 + n3);
     }

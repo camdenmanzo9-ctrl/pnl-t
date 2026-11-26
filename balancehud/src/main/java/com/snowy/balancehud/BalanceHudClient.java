@@ -764,7 +764,7 @@ public class BalanceHudClient implements ClientModInitializer {
         int yz = y + (int) (max / (max - min) * (h - 1));
         for (int dx = 0; dx < w; dx += 6) g.fill(x + dx, yz, x + Math.min(w, dx + 2), yz + 1, 0x16FFFFFF);
         if (n == 0) return yz;
-        // Thin, smooth (anti-aliased) 1px line: green while you're up, pink while you're down,
+        // Thin, crisp 1px line: green while you're up, pink while you're down,
         // with a matching tint between the line and $0.
         double prev = -1;
         int last = yz;
@@ -781,20 +781,9 @@ public class BalanceHudClient implements ClientModInitializer {
             g.fill(x + i, Math.min(yy, yz), x + i + 1, Math.max(yy, yz) + 1, 0x1C000000 | rgb);
             double a = i == 0 ? fy : prev, b = fy;
             double lo = Math.min(a, b), hi = Math.max(a, b);
-            if (hi - lo < 1.0) {
-                // flat part: split the pixel between the two rows it falls on
-                double mid = (lo + hi) / 2;
-                int row = (int) Math.floor(mid);
-                double frac = mid - row;
-                g.fill(x + i, row, x + i + 1, row + 1, ((int) (255 * (1 - frac)) << 24) | rgb);
-                if (frac > 0.02) g.fill(x + i, row + 1, x + i + 1, row + 2, ((int) (255 * frac) << 24) | rgb);
-            } else {
-                // steep part: solid middle, soft ends
-                int top = (int) Math.floor(lo), bot = (int) Math.ceil(hi);
-                g.fill(x + i, top + 1, x + i + 1, bot, lineColor);
-                g.fill(x + i, top, x + i + 1, top + 1, ((int) (255 * (1 - (lo - top))) << 24) | rgb);
-                g.fill(x + i, bot, x + i + 1, bot + 1, ((int) (255 * (1 - (bot - hi))) << 24) | rgb);
-            }
+            // crisp 1px line: solid pixels, no soft edges
+            int top = (int) Math.round(lo), bot = (int) Math.round(hi);
+            g.fill(x + i, top, x + i + 1, Math.max(top + 1, bot + 1), lineColor);
             prev = fy;
             last = yy;
         }
